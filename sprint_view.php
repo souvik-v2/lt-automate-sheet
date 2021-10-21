@@ -35,84 +35,25 @@ if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')
     //echo json_encode($data);
     $json_data = json_encode($sprint_data);
 }
-//remove later if not needed
-/*if (isset($_GET['action']) && ($_GET['action'] === 'deletesprint')) {
+
+if (isset($_GET['action']) && ($_GET['action'] === 'deletesprint')) {
     $sql = "DELETE FROM sprint_data WHERE sprint_id = '" . $_GET['sprint_id'] . "'";
     tep_db_query($sql);
     $_SESSION['success'] = "Record deleted successfully!!!";
-    tep_redirect('home.php');
-}*/
+    tep_redirect('sprint_view.php');
+}
 ?>
 
-<div class="container">
-    <?php include('project_sprint.php'); ?>
-    <?php if(!isset($_GET['action'])) { ?>
-        <div class="template-default">
-            <div class="project-details">
-                <div class="heading">
-                    <h4>DEFAULT PROJECT HEALTH DASHBOARD</h4>
-                </div>
-                <div class="project-dashboard">
-                    <div class="pr-left">
-                        <table class="table">
-                            <tr>
-                                <th>Project Name</th>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <th>Delivery Manager</th>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <th>Project Manager</th>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <th>Client Poc</th>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <th>Client Feedback</th>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <th>Team Allocation</th>
-                                <td colspan="3">-</td>
-                            </tr>
-                            <tr>
-                                <th>Offshore Team</th>
-                                <td>Allocated</td>
-                                <td><span class="allocated">-</span></td>
-                                <th>Bilable</th>
-                                <td><span class="allocated">-</span></td>
-                            </tr>
-                            <tr>
-                                <th>Onsite Team</th>
-                                <td>Allocated</td>
-                                <td><span class="allocated">-</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="pro-right">
-                        <table class="table">
-                            <tr>
-                                <th>Status Date</th>
-                                <td><?php echo  date('d-M-Y', strtotime(date('Y-m-d'))); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Overall Status</th>
-                                <td align="center">
-                                    <span style="color:#000; padding: 8px 20px;">
-                                        -
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid">
+    <div class="row mt-3">
+        <div class="col-6">
+            <h4>Sprint Page</h4>
         </div>
-    <?php } ?>
+        <div class="col-6 text-right">
+            <a href="sprint.php" class="btn" role="button">Add Sprint</a>
+        </div>
+    </div>
+    <?php include('project_sprint_view.php'); ?>
 </div>
 
 <script src="includes/chart.js"></script>
@@ -120,7 +61,7 @@ if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')
     function deleteConfirm(id) {
         //console.log(id);
         if (confirm("Are you sure to delete this record?")) {
-            location.href = "home.php?action=deletesprint&sprint_id=" + id;
+            location.href = "sprint_view.php?action=deletesprint&sprint_id=" + id;
         }
     }
     $(document).ready(function() {

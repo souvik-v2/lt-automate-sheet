@@ -22,7 +22,11 @@ $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager
         <h4>Project List</h4>
         </div>
     </div>
-    
+    <div class="row text-right">
+        <div class="col-12 text-right">
+            <a href="project_edit.php" class="btn" role="button">Add Project</a>
+        </div>
+    </div>
     <div class="row  mb-3">
         <div class="table-responsive">
             <table class="table table-striped">
@@ -61,8 +65,8 @@ $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager
                             <td><?php echo $row["offshore_team_billable"]; ?></td>
                             <td><?php echo $row["onsite_team_allocated"]; ?></td>
                             <td><?php echo $row["onsite_team_billable"]; ?></td>
-                            <td><?php echo $row["status_date"]; ?></td>
-                            <td><?php echo $row["overall_status"]; ?></td>
+                            <td><?php echo date('d-M-Y', strtotime($row["status_date"])); ?></td>
+                            <td><?php echo ucfirst($row["overall_status"]); ?></td>
                             <td><a href="project_edit.php?action=editproject&project_id=<?php echo $row['project_id']; ?>"><i class="far fa-edit"></i></a> |
                                 <a onclick='deleteConfirm("<?php echo $row['project_id']; ?>")' href="javascript:void(0)"><i class="far fa-trash-alt"></i></a>
                             </td>

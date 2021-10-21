@@ -229,37 +229,57 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
     //
     tep_db_perform('sprint_data', $sql_data_array, 'update', 'sprint_id=' . $_POST['sprint_id']);
     $_SESSION['success'] = "Record updated successfully!!!";
-    tep_redirect('home.php');
+    tep_redirect('sprint_view.php');
 }
 ?>
-<div class="content container">
-    <h2>Edit Sprint</h2>
-    <div class="row">
-        <div class="col-12">
-            <form method="POST" action="edit.php?action=updatesprint&sprint_id=<?php echo $_GET['sprint_id'];?>" name="automate-sheet" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="formGroupExampleInput">Project Name </label>
+<div class="container contact mt-3">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="contact-info">
+				<img src="images/v-2-logo.svg" alt="image"/>
+				<h2>Edit Sprint</h2>
+			</div>
+		</div>
+		<div class="col-md-9">
+        <form method="POST" action="edit.php?action=updatesprint&sprint_id=<?php echo $_GET['sprint_id'];?>" name="automate-sheet" enctype="multipart/form-data">
+			<div class="contact-form">
+				<div class="form-group">
+				  <label class="control-label col-sm-4" for="fname">Project Name:</label>
+				  <div class="col-sm-10">          
                     <select name="project_id" class="form-control">
                         <option value="">Select Project</option>
                         <?php echo $option_list; ?>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput2">Sprint Name</label>
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-4" for="lname">Sprint Name:</label>
+				  <div class="col-sm-10">          
                     <input type="text" class="form-control" placeholder="Sprint Name" name="sprint_name" value="<?php echo $row['sprint_name']; ?>">
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput2">Upload To Update Planned Story Point</label>
-                    <input type="file" name="csv" id="file">
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-10" for="file">Upload To Update Planned Story Point:</label>
+				  <div class="col-sm-10">
+                  <input type="file" name="csv" id="file">
                     <input type="hidden" name="sprint_id" value="<?php echo $row['sprint_id']; ?>">
-                </div>
-                <div class="form-group">
-                    <label for="file_rw">Upload To Update Rework Caculation CSV</label>
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-10" for="file_rw">Upload To Update Reopen Caculation CSV:</label>
+				  <div class="col-sm-10">
                     <input type="file" name="csv_rw" id="file_rw">
-                </div>
-                <button class="btn btn-primary" type="submit" name="automate">Update Planned Story Point CSV</button>
-            </form>
-        </div>
-    </div>
+				  </div>
+				</div>
+				<div class="form-group">        
+				  <div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn2 btn-default" name="automate">Update</button>
+				  </div>
+				</div>
+			</div>
+        </form>    
+		</div>
+	</div>
 </div>
+
 <?php include_once('includes/footer.php'); ?>

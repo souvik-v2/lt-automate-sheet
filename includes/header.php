@@ -35,17 +35,14 @@
 				</li>
 				<?php if ($_SESSION['loginuser']['role'] === 'admin') { ?>
 					<li class="nav-item">
-						<a class="nav-link" href="user_management.php">Users</a>
+						<a class="nav-link" href="user_management.php">User</a>
 					</li>
 				<?php } ?>
 				<li class="nav-item active">
-					<a class="nav-link" href="project.php">Project List</a>
+					<a class="nav-link" href="project.php">Project</a>
 				</li>
 				<li class="nav-item active">
-					<a class="nav-link" href="project_edit.php">Add Project</a>
-				</li>
-				<li class="nav-item active">
-					<a class="nav-link" href="sprint.php">Add Sprint</a>
+					<a class="nav-link" href="sprint_view.php">Sprint</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="logout.php">Logout</a>

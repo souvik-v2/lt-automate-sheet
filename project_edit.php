@@ -57,130 +57,176 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
     tep_redirect('project.php');
 }
 ?>
-<div class="container">
-    <?php if (isset($_GET['action']) && ($_GET['action'] === 'editproject')) { ?>
-        <div class="row mt-3 mb-3">
-            <div class="col">
-                <h2>Edit Project</h2>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-12">
-                <form method="POST" action="project_edit.php?action=updateproject" name="automate-sheet">
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Project Name</label>
-                        <input type="text" class="form-control" value="<?php echo $data['project_name'] ?>" name="project_name" />
-                        <input type="hidden" value="<?php echo $data['project_id'] ?>" name="project_id" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Delivery Manager</label>
-                        <input type="text" class="form-control" placeholder="Delivery Manager" name="delivery_manager" value="<?php echo $data['delivery_manager'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Project Manager</label>
-                        <input type="text" class="form-control" placeholder="Project Manager" name="project_manager" value="<?php echo $data['project_manager'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Client Poc</label>
-                        <input type="text" class="form-control" placeholder="Client Poc" name="client_poc" value="<?php echo $data['client_poc'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Client Feedback</label>
-                        <input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" value="<?php echo $data['client_feedback'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Team Allocation</label>
-                        <input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" value="<?php echo $data['team_allocation'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Offshore Team Allocated</label>
-                        <input type="number" class="form-control" placeholder="Offshore Team Allocated" name="offshore_team_allocated" value="<?php echo $data['offshore_team_allocated'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Offshore Team Billable</label>
-                        <input type="number" class="form-control" placeholder="Offshore Team Billable" name="offshore_team_billable" value="<?php echo $data['offshore_team_billable'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Onsite Team Allocated</label>
-                        <input type="number" class="form-control" placeholder="Onsite Team Allocated" name="onsite_team_allocated" value="<?php echo $data['onsite_team_allocated'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Onsite Team Billable</label>
-                        <input type="number" class="form-control" placeholder="Onsite Team Billable" name="onsite_team_billable" value="<?php echo $data['onsite_team_billable'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Overall Status</label>
-                        <select name="overall_status" class="form-control">
-                            <option value="green" <?php echo ($data['overall_status'] == 'green' ? 'selected' : ''); ?>>Green</option>
-                            <option value="red" <?php echo ($data['overall_status'] == 'red' ? 'selected' : ''); ?>>Red</option>
-                            <option value="amber" <?php echo ($data['overall_status'] == 'amber' ? 'selected' : ''); ?>>Amber</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" type="submit" name="automate">Update Project</button>
-                </form>
-            </div>
-        </div>
-    <?php } else { ?>
-        <div class="row mt-3 mb-3">
-            <div class="col">
-                <h2>Add Project</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <form method="POST" action="project_edit.php?action=newproject" name="automate-sheet" />
+<div class="container contact">
+<?php if (isset($_GET['action']) && ($_GET['action'] === 'editproject')) { ?>
+	<div class="row mt-3">
+		<div class="col-md-3">
+			<div class="contact-info">
+				<img src="images/v-2-logo.svg" alt="image"/>
+				<h2>Edit Project</h2>
+			</div>
+		</div>
+		<div class="col-md-9">
+        <form method="POST" action="project_edit.php?action=updateproject" name="automate-sheet">
+			<div class="contact-form">
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="fname">Project Name:</label>
+				  <div class="col-sm-10">          
+                  <input type="text" class="form-control" value="<?php echo $data['project_name'] ?>" name="project_name" />
+                  <input type="hidden" value="<?php echo $data['project_id'] ?>" name="project_id" />
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="lname">Delivery Manager:</label>
+				  <div class="col-sm-10">          
+                    <input type="text" class="form-control" placeholder="Delivery Manager" name="delivery_manager" value="<?php echo $data['delivery_manager'] ?>" />
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="email">Project Manager:</label>
+				  <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="Project Manager" name="project_manager" value="<?php echo $data['project_manager'] ?>" />
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="comment">Client Poc:</label>
+				  <div class="col-sm-10">
+                  <input type="text" class="form-control" placeholder="Client Poc" name="client_poc" value="<?php echo $data['client_poc'] ?>" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Project Name</label>
-                    <input type="text" class="form-control" placeholder="Project Name" name="project_name" required />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Client Feedback:</label>
+				  <div class="col-sm-10">
+                  <input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" value="<?php echo $data['client_feedback'] ?>" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Delivery Manager</label>
-                    <input type="text" class="form-control" placeholder="Delivery Manager" name="delivery_manager" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Team Allocation:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" value="<?php echo $data['team_allocation'] ?>" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Project Manager</label>
-                    <input type="text" class="form-control" placeholder="Project Manager" name="project_manager" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Offshore Team Allocated:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Offshore Team Allocated" name="offshore_team_allocated" value="<?php echo $data['offshore_team_allocated'] ?>" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Client Poc</label>
-                    <input type="text" class="form-control" placeholder="Client Poc" name="client_poc" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Offshore Team Billable:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Offshore Team Billable" name="offshore_team_billable" value="<?php echo $data['offshore_team_billable'] ?>" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Client Feedback</label>
-                    <input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Onsite Team Allocated:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Onsite Team Allocated" name="onsite_team_allocated" value="<?php echo $data['onsite_team_allocated'] ?>" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Team Allocation</label>
-                    <input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Overall Status:</label>
+				  <div class="col-sm-10">
+                  <select name="overall_status" class="form-control">
+                        <option value="green" <?php echo ($data['overall_status'] == 'green' ? 'selected' : ''); ?>>Green</option>
+                        <option value="red" <?php echo ($data['overall_status'] == 'red' ? 'selected' : ''); ?>>Red</option>
+                        <option value="amber" <?php echo ($data['overall_status'] == 'amber' ? 'selected' : ''); ?>>Amber</option>
+                    </select>
+				  </div>
+				</div>
+				<div class="form-group">        
+				  <div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default" name="automate">Update Project</button>
+				  </div>
+				</div>
+			</div>
+        </form>
+		</div>
+	</div>
+<?php } else { ?>
+    <div class="row mt-3">
+		<div class="col-md-3">
+			<div class="contact-info">
+				<img src="images/v-2-logo.svg" alt="image"/>
+				<h2>Add Project</h2>
+			</div>
+		</div>
+		<div class="col-md-9">
+        <form method="POST" action="project_edit.php?action=newproject" name="automate-sheet" />
+			<div class="contact-form">
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="fname">Project Name:</label>
+				  <div class="col-sm-10">          
+                  <input type="text" class="form-control" name="project_name" required />
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="lname">Delivery Manager:</label>
+				  <div class="col-sm-10">          
+                    <input type="text" class="form-control" placeholder="Delivery Manager" name="delivery_manager" required />
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="email">Project Manager:</label>
+				  <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="Project Manager" name="project_manager" required />
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-6" for="comment">Client Poc:</label>
+				  <div class="col-sm-10">
+                  <input type="text" class="form-control" placeholder="Client Poc" name="client_poc" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Offshore Team Allocated</label>
-                    <input type="number" class="form-control" placeholder="Offshore Team Allocated" name="offshore_team_allocated" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Client Feedback:</label>
+				  <div class="col-sm-10">
+                  <input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Offshore Team Billable</label>
-                    <input type="number" class="form-control" placeholder="Offshore Team Billable" name="offshore_team_billable" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Team Allocation:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Onsite Team Allocated</label>
-                    <input type="number" class="form-control" placeholder="Onsite Team Allocated" name="onsite_team_allocated" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Offshore Team Allocated:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Offshore Team Allocated" name="offshore_team_allocated" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Onsite Team Billable</label>
-                    <input type="number" class="form-control" placeholder="Onsite Team Billable" name="onsite_team_billable" />
-                </div>
+				  <label class="control-label col-sm-6" for="comment">Offshore Team Billable:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Offshore Team Billable" name="offshore_team_billable" />
+				  </div>
+				</div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Overall Status</label>
+				  <label class="control-label col-sm-6" for="comment">Onsite Team Allocated:</label>
+				  <div class="col-sm-10">
+                  <input type="number" class="form-control" placeholder="Onsite Team Allocated" name="onsite_team_allocated" />
+				  </div>
+				</div>
+                <div class="form-group">
+				  <label class="control-label col-sm-6" for="comment">Overall Status:</label>
+				  <div class="col-sm-10">
                     <select name="overall_status" class="form-control">
                         <option value="green">Green</option>
                         <option value="red">Red</option>
                         <option value="amber">Amber</option>
                     </select>
-                </div>
-                <button class="btn btn-primary" type="submit" name="automate">Add Project</button>
-                </form>
-            </div>
-        </div>
-    <?php } ?>
+				  </div>
+				</div>
+				<div class="form-group">        
+				  <div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default" name="automate">Add Project</button>
+				  </div>
+				</div>
+			</div>
+        </form>
+		</div>
+	</div>
+<?php } ?>
 </div>
 <?php include_once('includes/footer.php'); ?>

@@ -170,9 +170,9 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
             $rw_resource_point_array = $rw_story['rw_resource'];
             foreach ($rw_resource_point_array as $k => $v) {
                 if ($v == 1) {
-                    $rw_v2_score[] = $rw_story_point_array[$k];
+                    $rw_v2_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
                 } else {
-                    $rw_lt_score[] = $rw_story_point_array[$k];
+                    $rw_lt_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
                 }
             }
             $rework = array_sum($rw_v2_score);
@@ -204,40 +204,54 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
     //
     tep_db_perform('sprint_data', $sql_data_array);
     $_SESSION['success'] = "Record created successfully!!!";
-    tep_redirect('home.php');
+    tep_redirect('sprint_view.php');
 }
 ?>
-<div class="container">
-    <div class="row mt-3 mb-3">
-        <div class="col">
-            <h2>Add Sprint</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <form method="POST" action="sprint.php?action=newsprint" name="automate-sheet" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="formGroupExampleInput">Project Name </label>
+<div class="container contact mt-3">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="contact-info">
+				<img src="images/v-2-logo.svg" alt="image"/>
+				<h2>Add Sprint</h2>
+			</div>
+		</div>
+		<div class="col-md-9">
+        <form method="POST" action="sprint.php?action=newsprint" name="automate-sheet" enctype="multipart/form-data">
+			<div class="contact-form">
+				<div class="form-group">
+				  <label class="control-label col-sm-4" for="fname">Project Name:</label>
+				  <div class="col-sm-10">          
                     <select name="project_id" class="form-control">
                         <option value="">Select Project</option>
                         <?php echo $option_list; ?>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput2">Sprint Name</label>
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-4" for="lname">Sprint Name:</label>
+				  <div class="col-sm-10">          
                     <input type="text" class="form-control" placeholder="Sprint Name" name="sprint_name" required>
-                </div>
-                <div class="form-group">
-                    <label for="file">Upload Planned Story Point CSV</label>
+				</div>
+				<div class="form-group mt-3">
+				  <label class="control-label col-sm-10" for="file">Upload Planned Story Point:</label>
+				  <div class="col-sm-10">
                     <input type="file" name="csv" id="file">
-                </div>
-                <div class="form-group">
-                    <label for="file_rw">Upload Rework Caculation CSV</label>
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="control-label col-sm-10" for="file_rw">Upload Reopen Caculation CSV:</label>
+				  <div class="col-sm-10">
                     <input type="file" name="csv_rw" id="file_rw">
-                </div>
-                <button class="btn btn-primary" type="submit" name="automate">Add Sprint Data</button>
-            </form>
-        </div>
-    </div>
+				  </div>
+				</div>
+				<div class="form-group">        
+				  <div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn2 btn-default" name="automate">Add Sprint Data</button>
+				  </div>
+				</div>
+			</div>
+        </form>    
+		</div>
+	</div>
 </div>
 <?php include_once('includes/footer.php'); ?>

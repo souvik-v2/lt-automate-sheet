@@ -60,10 +60,14 @@ form{
 	box-shadow: 0 0 5px rgba(0,80,80,.4); 
 	border-radius: 4px;
 }
-.btn{
-	transition: all .5s ease;
+
+.btn2 {
 	width: 70%;
 	border-radius: 30px;
+}
+
+.btn{
+	transition: all .5s ease;
 	color:#008080;
 	font-weight: 600;
 	background-color: #fff;
@@ -85,7 +89,7 @@ form{
 
 .project-dashboard {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   width: 100%;
   padding: 0px 20px;
 }
@@ -93,7 +97,10 @@ form{
 .chart {
   margin: 40px auto;
   border: 1px solid #f7eded;
-  padding: 20px;
+}
+
+#chart-container-1 {
+	padding: 0 30px;
 }
 
 .project-dashboard th {
@@ -142,4 +149,16 @@ form{
     background: transparent;
     border: none;
     font-size: 20px;
+}
+.contact .col-md-3 {
+    background: #ff9b00;
+    padding: 4%;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+.contact-info {
+    margin-top: 10%;
+}
+.contact-info img {
+    margin-bottom: 15%;
 }

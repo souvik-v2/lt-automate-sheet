@@ -114,8 +114,8 @@ if(isset($_GET['project_id'])) {
         $sheet->setCellValue('V1', 'Actual Delivered');
         $sheet->setCellValue('W1', 'V2 Delivered');
         $sheet->setCellValue('X1', 'LT Delivered');
-        $sheet->setCellValue('Y1', 'V2 Rework');
-        $sheet->setCellValue('Z1', 'LT Rework');
+        $sheet->setCellValue('Y1', 'V2 Reopen');
+        $sheet->setCellValue('Z1', 'LT Reopen');
         $sheet->setCellValue('AA1', 'V2 Carryover');
         $sheet->setCellValue('AB1', 'LT Carryover');
         $sheet->setCellValue('AC1', 'QA Passed');

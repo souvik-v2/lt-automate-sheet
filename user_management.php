@@ -12,13 +12,18 @@ if (isset($_GET['action']) && ($_GET['action'] === 'deleteuser')) {
     $sql = tep_db_query("DELETE FROM user_accounts WHERE id = '" . $_GET['id'] . "'");
     $_SESSION['success'] = "User deleted successfully!!!";
 }
-
-$result = tep_db_query("SELECT id, username, email, password, role, status FROM user_accounts WHERE role != '1' order by id desc");
+$uid = $_SESSION['loginuser']['id'];
+$result = tep_db_query("SELECT id, username, email, password, role, status FROM user_accounts WHERE id != ". $uid ." order by id desc");
 ?>
 <div class="container">
     <div class="row mt-3">
         <div class="col">
             <h4>User List</h4>
+        </div>
+    </div>
+    <div class="row text-right">
+        <div class="col-12 text-right">
+            <a href="user_add.php" class="btn" role="button">Add User</a>
         </div>
     </div>
     <?php
