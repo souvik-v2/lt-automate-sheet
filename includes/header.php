@@ -6,38 +6,80 @@
 	<title>LT Automate Sheet</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-	<link href="css/style.css?v=<?php echo time();?>" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link href="//www.v2solutions.com/images/fav.ico" type="image/x-icon" rel="icon">
+	<link rel="stylesheet" href="css/style.css?v=<?=time();?>">
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+
 </head>
 
 <body class="loggedin">
-	<nav class="navtop">
-		<div>
-			<h1>LT Automate Sheet</h1>
-			<a href="home.php"><i class="fas fa-home"></i>Home</a>
-			<?php if($_SESSION['loginuser']['role'] === 'admin') { ?>
-			<a href="user_management.php"><i class="fas fa-home"></i>Users</a>
-			<?php } ?>
-			<a href="logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
-			<a href="profile.php"><i class="fas fa-user-circle"></i>Howdy, <?= ucfirst($_SESSION['loginuser']['name']); ?></a>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<a class="navbar-brand" href="#">LT Automate Sheet</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="home.php">Home</a>
+				</li>
+				<?php if ($_SESSION['loginuser']['role'] === 'admin') { ?>
+					<li class="nav-item">
+						<a class="nav-link" href="user_management.php">Users</a>
+					</li>
+				<?php } ?>
+				<li class="nav-item active">
+					<a class="nav-link" href="project.php">Project List</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="project_edit.php">Add Project</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="sprint.php">Add Sprint</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="logout.php">Logout</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="profile.php">Howdy, <?= ucfirst($_SESSION['loginuser']['name']); ?></a>
+				</li>
+			</ul>
 		</div>
 	</nav>
-	<?php if(isset($_SESSION['success']) && !empty($_SESSION['success'])) { ?>
+
+	<?php if (isset($_SESSION['success']) && !empty($_SESSION['success'])) { ?>
 		<div class='alert alert-success'> <?php echo $_SESSION['success']; ?> <button onclick="this.parentNode.style.display = 'none';">X</button></div>
 	<?php } ?>
-	<?php if(isset($_SESSION['error']) && !empty($_SESSION['error'])) { ?>
+	<?php if (isset($_SESSION['error']) && !empty($_SESSION['error'])) { ?>
 		<div class='alert alert-danger'> <?php echo $_SESSION['error']; ?> <button onclick="this.parentNode.style.display = 'none';">X</button></div>
 	<?php } ?>
 	<script>
-	$(document).ready(function() {
-		setTimeout(function(){ 
-			<?php unset($_SESSION['error'], $_SESSION['success']);?>; 
-		}, 5000);
-	});
+		$(document).ready(function() {
+			setTimeout(function() {
+				<?php unset($_SESSION['error'], $_SESSION['success']); ?>;
+			}, 5000);
+		});
 	</script>
+	<style>
+	.alert {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.alert>button {
+		background: transparent;
+		border: 1px solid #90ee90;
+		font-size: 17px;
+		border-radius: 100px;
+	}
+	</style>

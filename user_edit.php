@@ -4,7 +4,7 @@ session_start();
 require('includes/db.php');
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.html');
+    tep_redirect('index.php');
 }
 include('includes/header.php');
 

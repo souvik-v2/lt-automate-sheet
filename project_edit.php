@@ -4,7 +4,7 @@ session_start();
 require('includes/db.php');
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.html');
+    tep_redirect('index.php');
 }
 include('includes/header.php');
 
@@ -57,10 +57,14 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
     tep_redirect('project.php');
 }
 ?>
-<div class="content container">
+<div class="container">
     <?php if (isset($_GET['action']) && ($_GET['action'] === 'editproject')) { ?>
-        <h2>Edit Project</h2>
-        <div class="row">
+        <div class="row mt-3 mb-3">
+            <div class="col">
+                <h2>Edit Project</h2>
+            </div>
+        </div>
+        <div class="row mb-3">
             <div class="col-12">
                 <form method="POST" action="project_edit.php?action=updateproject" name="automate-sheet">
                     <div class="form-group">
@@ -117,59 +121,63 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
             </div>
         </div>
     <?php } else { ?>
-        <h2>Add Project</h2>
+        <div class="row mt-3 mb-3">
+            <div class="col">
+                <h2>Add Project</h2>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <form method="POST" action="project_edit.php?action=newproject" name="automate-sheet" />
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Project Name</label>
-                        <input type="text" class="form-control" placeholder="Project Name" name="project_name" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Delivery Manager</label>
-                        <input type="text" class="form-control" placeholder="Delivery Manager" name="delivery_manager" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Project Manager</label>
-                        <input type="text" class="form-control" placeholder="Project Manager" name="project_manager" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Client Poc</label>
-                        <input type="text" class="form-control" placeholder="Client Poc" name="client_poc" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Client Feedback</label>
-                        <input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Team Allocation</label>
-                        <input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Offshore Team Allocated</label>
-                        <input type="number" class="form-control" placeholder="Offshore Team Allocated" name="offshore_team_allocated" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Offshore Team Billable</label>
-                        <input type="number" class="form-control" placeholder="Offshore Team Billable" name="offshore_team_billable" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Onsite Team Allocated</label>
-                        <input type="number" class="form-control" placeholder="Onsite Team Allocated" name="onsite_team_allocated" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Onsite Team Billable</label>
-                        <input type="number" class="form-control" placeholder="Onsite Team Billable" name="onsite_team_billable" />
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Overall Status</label>
-                        <select name="overall_status" class="form-control">
-                            <option value="green">Green</option>
-                            <option value="red">Red</option>
-                            <option value="amber">Amber</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" type="submit" name="automate">Add Project</button>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Project Name</label>
+                    <input type="text" class="form-control" placeholder="Project Name" name="project_name" required />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Delivery Manager</label>
+                    <input type="text" class="form-control" placeholder="Delivery Manager" name="delivery_manager" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Project Manager</label>
+                    <input type="text" class="form-control" placeholder="Project Manager" name="project_manager" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Client Poc</label>
+                    <input type="text" class="form-control" placeholder="Client Poc" name="client_poc" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Client Feedback</label>
+                    <input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Team Allocation</label>
+                    <input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Offshore Team Allocated</label>
+                    <input type="number" class="form-control" placeholder="Offshore Team Allocated" name="offshore_team_allocated" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Offshore Team Billable</label>
+                    <input type="number" class="form-control" placeholder="Offshore Team Billable" name="offshore_team_billable" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Onsite Team Allocated</label>
+                    <input type="number" class="form-control" placeholder="Onsite Team Allocated" name="onsite_team_allocated" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Onsite Team Billable</label>
+                    <input type="number" class="form-control" placeholder="Onsite Team Billable" name="onsite_team_billable" />
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Overall Status</label>
+                    <select name="overall_status" class="form-control">
+                        <option value="green">Green</option>
+                        <option value="red">Red</option>
+                        <option value="amber">Amber</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit" name="automate">Add Project</button>
                 </form>
             </div>
         </div>

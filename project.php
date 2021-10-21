@@ -4,7 +4,7 @@ session_start();
 require('includes/db.php');
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.html');
+    tep_redirect('index.php');
 }
 include('includes/header.php');
 
@@ -16,9 +16,14 @@ if (isset($_GET['action']) && ($_GET['action'] === 'deleteproject')) {
 
 $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status` FROM project order by project_id desc");
 ?>
-<div class="content container">
-    <h2>Project List</h2>
-    <div class="row">
+<div class="container-fluid">
+    <div class="row mt-3 mb-3">
+        <div class="col">
+        <h4>Project List</h4>
+        </div>
+    </div>
+    
+    <div class="row  mb-3">
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>

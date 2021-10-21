@@ -4,7 +4,7 @@ session_start();
 require('includes/db.php');
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.html');
+    tep_redirect('index.php');
 }
 include('includes/header.php');
 
@@ -15,12 +15,16 @@ if (isset($_GET['action']) && ($_GET['action'] === 'deleteuser')) {
 
 $result = tep_db_query("SELECT id, username, email, password, role, status FROM user_accounts WHERE role != '1' order by id desc");
 ?>
-<div class="content container">
-    <h2>User List</h2>
+<div class="container">
+    <div class="row mt-3">
+        <div class="col">
+            <h4>User List</h4>
+        </div>
+    </div>
     <?php
         if (tep_db_num_rows($result) > 0) {
     ?>
-            <div class="row">
+            <div class="row mt-3">
                 <table class="table table-striped">
                     <thead>
                         <tr>

@@ -25,11 +25,13 @@ if (tep_db_num_rows($check_query) == 1) {
         $_SESSION['success'] = "Logged in successfully!!";
         tep_redirect('home.php');
     } else {
-        tep_redirect('index.html');
+        $_SESSION['error'] = "Password not matched!!";
+        tep_redirect('index.php');
     }
 
 } else {
-    tep_redirect('index.html');
+    $_SESSION['error'] = "Username/Password not matched!!";
+    tep_redirect('index.php');
 }
 
 
