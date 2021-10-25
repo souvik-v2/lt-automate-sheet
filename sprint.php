@@ -198,7 +198,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
         'lt_reopen_percentage' =>  round(($lt_reoponed_sp / $total_lt_score) * 100),
         'v2_carryover_percentage' =>  round(($total_v2_carryover / $total_v2_score) * 100),
         'lt_carryover_percentage' =>  round(($total_lt_carryover / $total_lt_score) * 100),
-        'planned_vs_completed_ratio' =>  round(($actual_delivered / $total_story_count) * 100)
+        'planned_vs_completed_ratio' =>  round(($actual_delivered / $total_story_count) * 100),
+        'created_date' => 'now()'
     );
     //echo '<pre>'; print_r($sql_data_array); die();
     //

@@ -21,7 +21,9 @@
                 </p>
             </div>
         </div>
-            <?php $prow = tep_db_fetch_array($p_result);  ?>
+            <?php 
+            $p_query = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . $_POST['project_id'] . "'");
+            $prow = tep_db_fetch_array($p_query); ?>
             <div class="project-details">
                 <div class="heading">
                     <h4>PROJECT HEALTH DASHBOARD</h4>
@@ -188,7 +190,14 @@
 
     <?php
         } else {
-            tep_redirect('home.php');
+            //tep_redirect('home.php');
+            ?>
+            <div class="row mb-3 mt-3">
+                <div class="col text-center">
+                    <p>No data to display</p>
+                </div>
+            </div>
+            <?php
         }
     }
     ?>

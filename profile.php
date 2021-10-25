@@ -18,6 +18,11 @@ $data = tep_db_fetch_array($stmt);
             <h4>Profile Page</h4>
         </div>
     </div>
+    <div class="row text-right">
+        <div class="col-12 text-right">
+            <a href="change_password.php?user_id=<?php echo $_SESSION['loginuser']['id'];?>" class="btn" role="button">Change Password</a>
+        </div>
+    </div>
     <div class="row mb-3 mt-3">
         <p>Your account details are below:</p>
         <table class="table table-striped">

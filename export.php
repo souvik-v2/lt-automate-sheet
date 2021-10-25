@@ -18,14 +18,12 @@ if(isset($_GET['project_id'])) {
     // Excel file name for download 
     $fileName = "LT-SimplifiedMetrics-" . time(); 
 
-    $project_sql = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status` FROM project WHERE project_id ='" . $_GET['project_id'] . "'");
+    $project_sql = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . $_GET['project_id'] . "'");
 
     
-    // sprint data
-    $sprint_sql = tep_db_query("SELECT s.`sprint_name`, s.`planned_story_point`, s.`actual_delivered`, s.`v2_delivered`, s.`lt_delivered`, s.`rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, s.`lt_reopen_percentage`, s.`v2_carryover_percentage`, s.`lt_carryover_percentage`, s.`planned_vs_completed_ratio` FROM project p, sprint_data s WHERE p.project_id = s.project_id AND p.project_id = '" . $_GET['project_id'] . "'");
 
 
-    if(tep_db_num_rows($project_sql) > 0 && tep_db_num_rows($sprint_sql) > 0 ) {
+    if(tep_db_num_rows($project_sql) > 0) {
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -82,7 +80,7 @@ if(isset($_GET['project_id'])) {
         $sheet->setCellValue('B3', 'PROJECT HEALTH DASHBOARD');
         $sheet->setCellValue('C7', 'Project Name');
         $sheet->setCellValue('C8', 'Delivery Manager');
-        $sheet->setCellValue('C9', 'Project Manager');
+        $sheet->setCellValue('C9', 'Project Manager/Lead');
         $sheet->setCellValue('C10', 'Client Poc');
         $sheet->setCellValue('C11', 'Client Feedback');
         $sheet->setCellValue('C12', 'Team Allocation');
@@ -135,6 +133,10 @@ if(isset($_GET['project_id'])) {
         $sheet->setCellValue('AK12', 'V2 Delivered');
         $sheet->setCellValue('AL12', 'LT Delivered');
 
+        // sprint data
+        //$flag = ($project_data['is_sprint'] == 1 ? " order by s.sprint_id desc LIMIT 0, 8" : " order by s.sprint_id desc LIMIT 0, 6");
+
+        $sprint_sql = tep_db_query("SELECT s.`sprint_name`, s.`planned_story_point`, s.`actual_delivered`, s.`v2_delivered`, s.`lt_delivered`, s.`rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, s.`lt_reopen_percentage`, s.`v2_carryover_percentage`, s.`lt_carryover_percentage`, s.`planned_vs_completed_ratio` FROM project p, sprint_data s WHERE p.project_id = s.project_id AND p.project_id = '" . $_GET['project_id'] . "'");
 
         //SPRINT VALUE
         $counter = 2;

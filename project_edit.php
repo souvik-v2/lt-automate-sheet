@@ -23,7 +23,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
         'onsite_team_allocated' =>  tep_db_input($_POST['onsite_team_allocated']),
         'onsite_team_billable' =>  tep_db_input($_POST['onsite_team_billable']),
         'status_date' =>  'now()',
-        'overall_status' =>  tep_db_input($_POST['overall_status'])
+        'overall_status' =>  tep_db_input($_POST['overall_status']),
+        'is_sprint' =>  tep_db_input($_POST['is_sprint'])
     );
     //
     tep_db_perform('project', $sql_data_array);
@@ -32,7 +33,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
 }
 
 if (isset($_GET['action']) && ($_GET['action'] === 'editproject')) {
-    $usql = "SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status` FROM project WHERE project_id = '" . $_GET['project_id'] . "'";
+    $usql = "SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, is_sprint FROM project WHERE project_id = '" . $_GET['project_id'] . "'";
     $uresult = tep_db_query($usql);
     $data = tep_db_fetch_array($uresult);
 }
@@ -49,7 +50,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
         'onsite_team_allocated' =>  tep_db_input($_POST['onsite_team_allocated']),
         'onsite_team_billable' =>  tep_db_input($_POST['onsite_team_billable']),
         'status_date' =>  tep_db_input($_POST['status_date']),
-        'overall_status' =>  tep_db_input($_POST['overall_status'])
+        'overall_status' =>  tep_db_input($_POST['overall_status']),
+        'is_sprint' =>  tep_db_input($_POST['is_sprint'])
     );
     tep_db_perform('project', $sql_data_array, 'update', 'project_id=' . $_POST['project_id']);
 
@@ -134,6 +136,15 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
                     </select>
 				  </div>
 				</div>
+                <div class="form-group">
+				  <label class="control-label col-sm-6" for="comment">Board:</label>
+				  <div class="col-sm-10">
+                    <select name="is_sprint" class="form-control">
+                        <option value="0" <?php echo ($data['is_sprint'] == '0' ? 'selected' : ''); ?>>Sprint</option>
+                        <option value="1" <?php echo ($data['is_sprint'] == '1' ? 'selected' : ''); ?>>Kanban Board</option>
+                    </select>
+				  </div>
+				</div>
 				<div class="form-group">        
 				  <div class="col-sm-offset-2 col-sm-10">
 					<button type="submit" class="btn btn-default" name="automate">Update Project</button>
@@ -215,6 +226,15 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
                         <option value="green">Green</option>
                         <option value="red">Red</option>
                         <option value="amber">Amber</option>
+                    </select>
+				  </div>
+				</div>
+                <div class="form-group">
+				  <label class="control-label col-sm-6" for="comment">Board:</label>
+				  <div class="col-sm-10">
+                    <select name="is_sprint" class="form-control">
+                        <option value="0">Sprint</option>
+                        <option value="1">Kanban Board</option>
                     </select>
 				  </div>
 				</div>

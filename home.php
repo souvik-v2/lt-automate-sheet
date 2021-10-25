@@ -21,19 +21,31 @@ if (tep_db_num_rows($p_result) > 0) {
 
 if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')) {
     //project data
-    $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status` FROM project WHERE project_id ='" . $_POST['project_id'] . "'");
+    $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . $_POST['project_id'] . "'");
+    
     // sprint data
     $sql = "SELECT s.`sprint_id`, p.`project_id`, p.`project_name`, s.`sprint_name`, s.`planned_story_point`, s.`actual_delivered`, s.`v2_delivered`, s.`lt_delivered`, s.`rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, s.`lt_reopen_percentage`, s.`v2_carryover_percentage`, s.`lt_carryover_percentage`, s.`planned_vs_completed_ratio` FROM project p, sprint_data s WHERE p.project_id = s.project_id AND p.project_id = '" . $_POST['project_id'] . "'";
-    $result = tep_db_query($sql);
 
+    $result = tep_db_query($sql);
+    //
+    $is_sprint_status = tep_db_fetch_array($p_result);
+    if($is_sprint_status['is_sprint'] == 1) {
+        $is_sprint_graph_query = tep_db_query($sql. " order by s.sprint_id desc LIMIT 0, 8");
+    } else {
+        $is_sprint_graph_query = tep_db_query($sql. " order by s.sprint_id desc LIMIT 0, 6");
+    }
+    //timestamp >= now()-interval 3 month
     $sprint_data = array();
     //$res = tep_db_fetch_array($result);
-    foreach ($result as $row) {
-        $sprint_data[] = $row;
+
+    foreach ($is_sprint_graph_query as $row) {
+        $graph_data[] = $row;
     }
 
     //echo json_encode($data);
-    $json_data = json_encode($sprint_data);
+    if (isset($graph_data)) {
+        $json_data = json_encode($graph_data);
+    }
 }
 //remove later if not needed
 /*if (isset($_GET['action']) && ($_GET['action'] === 'deletesprint')) {
@@ -46,8 +58,8 @@ if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')
 
 <div class="container">
     <?php include('project_sprint.php'); ?>
-    <?php if(!isset($_GET['action'])) { ?>
-        <div class="template-default">
+    <?php //if(!isset($_GET['action'])) { ?>
+        <!--<div class="template-default">
             <div class="project-details">
                 <div class="heading">
                     <h4>DEFAULT PROJECT HEALTH DASHBOARD</h4>
@@ -111,11 +123,10 @@ if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')
                     </div>
                 </div>
             </div>
-        </div>
-    <?php } ?>
+        </div>-->
+    <?php //} ?>
 </div>
-
-<script src="includes/chart.js"></script>
+<script src="includes/chart.js?v=<?php echo time();?>"></script>
 <script type="text/javascript">
     function deleteConfirm(id) {
         //console.log(id);

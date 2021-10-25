@@ -7,7 +7,7 @@ session_start();
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="author" content="V2Solutions">
-	<title>Login Page</title>
+	<title>LT Simplified Sheet - Login</title>
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link
@@ -26,6 +26,9 @@ session_start();
 	<?php } ?>
 	<script>
 		$(document).ready(function() {
+			$("input").autocomplete({
+				disabled: true
+			});
 			setTimeout(function() {
 				<?php unset($_SESSION['error'], $_SESSION['success']); ?>;
 			}, 5000);
@@ -46,10 +49,10 @@ session_start();
 					<div class="row">
 						<form action="authenticate.php" method="post" class="form-group">
 							<div class="row">
-								<input type="text" name="username" id="username" class="form__input" placeholder="Username" required />
+								<input type="text" autocomplete="off" name="username" id="username" class="form__input" placeholder="Username" required />
 							</div>
 							<div class="row">
-								<input type="password" name="password" id="password" class="form__input" placeholder="Password" required />
+								<input type="password" autocomplete="off" name="password" id="password" class="form__input" placeholder="Password" required />
 							</div>
 							<div class="row">
 								<input type="submit" value="Submit" class="btn">

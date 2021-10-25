@@ -13,8 +13,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateuser')) {
     $sql = "UPDATE user_accounts SET username = '" . $_POST['username'] . "', email = '" . $_POST['email'] . "', role = '" . $_POST['role'] . "', status = '" . $_POST['status'] . "' WHERE id = '" . $_POST['id'] . "' ";
     $result = tep_db_query($sql);
     $_SESSION['success'] = "User updated successfully!!!";
-    tep_redirect('user_edit.php?id=' . $_POST['id']);
-    //header('Location: user_edit.php?id='.$_POST['id']);
+    //tep_redirect('user_edit.php?id=' . $_POST['id']);
+    tep_redirect('user_management.php');
 }
 
 $result = tep_db_query("SELECT id, username, email, password, role, status FROM user_accounts WHERE id = '" . $_GET['id'] . "'");

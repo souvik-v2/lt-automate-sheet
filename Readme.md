@@ -4,7 +4,7 @@
 
 # Create lt-automate-sheet database and import sql file from __db__ folder.
 # test :: test // user
-# admin :: admin // admin
+# admin :: admin // admin@123
 
 # Note:
 # *All (%) calulation based on two excel file upload

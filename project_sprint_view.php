@@ -93,7 +93,14 @@
 
     <?php
         } else {
-            tep_redirect('home.php');
+            //tep_redirect('home.php');
+            ?>
+            <div class="row mb-3 mt-3">
+                <div class="col text-center">
+                    <p>No data to display</p>
+                </div>
+            </div>
+            <?php
         }
     }
     ?>

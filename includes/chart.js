@@ -1,3 +1,30 @@
+Chart.register(ChartDataLabels);
+Chart.defaults.set('plugins.datalabels', {
+    color: '#000',
+    align: function(context) {
+        var filter_id = context.chart.canvas.id;
+        if(filter_id === 'graphCanvas3' || filter_id === 'graphCanvas4') {
+            return "right";
+        }
+        return "center";
+        
+    },
+    font: {
+        size: 12
+    },
+    formatter: function(value, context) {
+        var filter_id = context.chart.canvas.id;
+        if(filter_id === 'graphCanvas4') {
+            return (value / 100).toFixed(4);
+        }
+        if(filter_id !== 'graphCanvas1') {
+            return value + '%';
+        }
+        return value;
+        
+    }
+});
+
 function getArraySum(a){
     var total=0;
     for(var i in a) { 
@@ -60,7 +87,7 @@ function getArraySum(a){
                 ]
             };
 
-            //console.log(sprint_name);
+            console.log(throughputChartdata);
            
 
             var graphTarget = $("#graphCanvas1");
@@ -75,18 +102,7 @@ function getArraySum(a){
                             text: 'Throughput Distribution'
                         },
                     },
-                    responsive: true,
-                    interaction: {
-                        intersect: false,
-                    },
-                    scales: {
-                        x: {
-                            stacked: true,
-                        },
-                        y: {
-                            stacked: true
-                        }
-                    }
+                    responsive: true
                 }
             });
 
@@ -94,7 +110,7 @@ function getArraySum(a){
             var sumRW = getArraySum(rework);
 
             var qualityChartData = {
-                labels: ['QA Passed', 'Rework'],
+                labels: ['QA Passed', 'Reopen'],
                 datasets: [
                     {
                     label: 'Dataset 1',
@@ -146,8 +162,17 @@ function getArraySum(a){
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Rework Trend'
+                            text: 'Reopen Trend'
                         },
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return value + '%';
+                                }
+                            }
+                        }
                     },
                     responsive: true,
                     
@@ -182,6 +207,15 @@ function getArraySum(a){
                             text: 'Carryover Trend'
                         },
                     },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return (value / 100).toFixed(1);
+                                }
+                            }
+                        }
+                    },
                     responsive: true,
                     
                 }
@@ -205,10 +239,18 @@ function getArraySum(a){
                         title: {
                             display: true,
                             text: 'Planned Vs Completed Ratio'
-                        },
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return value + '%';
+                                }
+                            }
+                        }
                     },
                     responsive: true,
-                    
                 }
             });
             console.log(data);

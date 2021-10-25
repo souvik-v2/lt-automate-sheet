@@ -10,7 +10,8 @@ include('includes/header.php');
 
 if (isset($_GET['action']) && ($_GET['action'] === 'deleteproject')) {
     $result = tep_db_query("DELETE FROM project WHERE project_id = '" . $_GET['project_id'] . "'");
-    $_SESSION['success'] = "Project deleted successfully!!!";
+    $result_sprint = tep_db_query("DELETE FROM sprint_data WHERE project_id = '" . $_GET['project_id'] . "'");
+    $_SESSION['success'] = "Project and sprint deleted successfully!!!";
     tep_redirect('project.php');
 }
 
@@ -35,14 +36,13 @@ $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager
                         <th scope="col">#</th>
                         <th scope="col">Project Name</th>
                         <th scope="col">Delivery Manager</th>
-                        <th scope="col">Project Manager</th>
+                        <th scope="col">Project Manager/Lead</th>
                         <th scope="col">Client Poc</th>
                         <th scope="col">Client Feedback</th>
                         <th scope="col">Team Allocation</th>
                         <th scope="col">Offshore Team Allocated</th>
                         <th scope="col">Offshore Team Billable</th>
                         <th scope="col">Onsite Team Allocated</th>
-                        <th scope="col">Onsite Team Billable</th>
                         <th scope="col">Status Date</th>
                         <th scope="col">Overall Status</th>
                         <th scope="col">Action</th>
@@ -64,7 +64,6 @@ $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager
                             <td><?php echo $row["offshore_team_allocated"]; ?></td>
                             <td><?php echo $row["offshore_team_billable"]; ?></td>
                             <td><?php echo $row["onsite_team_allocated"]; ?></td>
-                            <td><?php echo $row["onsite_team_billable"]; ?></td>
                             <td><?php echo date('d-M-Y', strtotime($row["status_date"])); ?></td>
                             <td><?php echo ucfirst($row["overall_status"]); ?></td>
                             <td><a href="project_edit.php?action=editproject&project_id=<?php echo $row['project_id']; ?>"><i class="far fa-edit"></i></a> |
@@ -82,7 +81,7 @@ $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager
 <script>
     function deleteConfirm(id) {
         //console.log(id);
-        if (confirm("Are you sure to delete this record?")) {
+        if (confirm("Are you sure you want to delete this project? It will also delete all sprint data.")) {
             location.href = "project.php?action=deleteproject&project_id=" + id;
         }
     }
