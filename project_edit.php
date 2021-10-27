@@ -12,7 +12,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
 	//case: new
 	//echo "<pre>"; print_r($_POST['developers']); //die();
 	$developers = implode(', ', $_POST['developers']);
-	
+
 	$sql_data_array = array(
 		'project_name' =>  tep_db_input($_POST['project_name']),
 		'delivery_manager' =>  tep_db_input($_POST['delivery_manager']),
@@ -36,11 +36,12 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
 }
 
 if (isset($_GET['action']) && ($_GET['action'] === 'editproject')) {
-	$usql = "SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, is_sprint FROM project WHERE project_id = '" . tep_db_input($_GET['project_id']) . "'";
+	$usql = "SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, is_sprint, developers FROM project WHERE project_id = '" . tep_db_input($_GET['project_id']) . "'";
 	$uresult = tep_db_query($usql);
 	$data = tep_db_fetch_array($uresult);
 }
 if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
+	$developers = implode(', ', $_POST['developers']);
 	$sql_data_array = array(
 		'project_name' =>  tep_db_input($_POST['project_name']),
 		'delivery_manager' =>  tep_db_input($_POST['delivery_manager']),
@@ -54,7 +55,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 		'onsite_team_billable' =>  tep_db_input($_POST['onsite_team_billable']),
 		'status_date' =>  tep_db_input($_POST['status_date']),
 		'overall_status' =>  tep_db_input($_POST['overall_status']),
-		'is_sprint' =>  tep_db_input($_POST['is_sprint'])
+		'is_sprint' =>  tep_db_input($_POST['is_sprint']),
+		'developers' => $developers
 	);
 	tep_db_perform('project', $sql_data_array, 'update', 'project_id=' . $_POST['project_id']);
 
@@ -146,6 +148,35 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 									<option value="0" <?php echo ($data['is_sprint'] == '0' ? 'selected' : ''); ?>>Sprint</option>
 									<option value="1" <?php echo ($data['is_sprint'] == '1' ? 'selected' : ''); ?>>Kanban Board</option>
 								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4" for="comment">Developers:</label>
+							<div class="col-10 controls">
+								<div id="field">
+									<?php
+									$devs = explode(', ', $data['developers']);
+									if (count($devs) > 0) {
+									}
+									?>
+									<input type="text" class="form-control developers" placeholder="Developers" name="developers[]" id="field1" value="<?php echo $devs[0]; ?>" />
+									<button id="b1" class="btn add-more" type="button">+</button>
+								</div>
+							</div>
+							<div id="fieldList" class="col-8 mt-4">
+								<?php
+								if (count($devs) > 1) {
+									for ($i = 1; $i < count($devs); $i++) {
+										$r = rand(2, 99);
+								?>
+										<div class="rw" id="rmv_<?= $r; ?>">
+											<input type="text" class="form-control developers mt-2" placeholder="Developers" name="developers[]" id="field<?= $r; ?>" value="<?= $devs[$i]; ?>" />
+											<span class="rm" id="d_<?= $r; ?>" onclick="rmInput('<?= $r; ?>')">-</span>
+										</div>
+								<?php
+									}
+								}
+								?>
 							</div>
 						</div>
 						<div class="form-group">
@@ -249,8 +280,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 								<button id="b1" class="btn add-more" type="button">+</button>
 							</div>
 						</div>
-						<div id="fieldList" class="col-8 mt-4">
-						</div>
+						<div id="fieldList" class="col-8 mt-4"></div>
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
@@ -268,8 +298,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 	$(function() {
 		$("#b1").click(function(e) {
 			e.preventDefault();
-			var r = Math.floor(Math.random() * 9) + 1;
-			$("#fieldList").append('<div class="rw" id="rmv_'+r+'"><input type="text" class="form-control developers mt-2" placeholder="Developers" name="developers[]" id="field' + r + '" /><span class="rm" id="d_' + r + '" onclick="rmInput(' + r + ')">-</span></div>');
+			var r = Math.floor(Math.random() * 99) + 1;
+			$("#fieldList").append('<div class="rw" id="rmv_' + r + '"><input type="text" class="form-control developers mt-2" placeholder="Developers" name="developers[]" id="field' + r + '" /><span class="rm" id="d_' + r + '" onclick="rmInput(' + r + ')">-</span></div>');
 		});
 
 	});
@@ -291,10 +321,12 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 	#b1 {
 		margin: 0 5px;
 	}
+
 	.rw {
 		display: flex;
 		justify-content: space-between;
 	}
+
 	span.rm {
 		font-size: 30px;
 		color: red;
