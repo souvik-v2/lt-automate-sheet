@@ -27,7 +27,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
 		'status_date' =>  'now()',
 		'overall_status' =>  tep_db_input($_POST['overall_status']),
 		'is_sprint' =>  tep_db_input($_POST['is_sprint']),
-		'developers' => $developers
+		'developers' => strtolower(trim($developers))
 	);
 	//
 	tep_db_perform('project', $sql_data_array);
@@ -56,7 +56,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 		'status_date' =>  tep_db_input($_POST['status_date']),
 		'overall_status' =>  tep_db_input($_POST['overall_status']),
 		'is_sprint' =>  tep_db_input($_POST['is_sprint']),
-		'developers' => $developers
+		'developers' => strtolower(trim($developers))
 	);
 	tep_db_perform('project', $sql_data_array, 'update', 'project_id=' . $_POST['project_id']);
 
