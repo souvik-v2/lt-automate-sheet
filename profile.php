@@ -8,7 +8,7 @@ if (!isset($_SESSION['loginuser']['loggedin'])) {
 }
 include('includes/header.php');
 
-$stmt = tep_db_query("SELECT password, email FROM user_accounts WHERE id = '" . $_SESSION['loginuser']['id'] ."'");
+$stmt = tep_db_query("SELECT password, email FROM user_accounts WHERE id = '" . tep_db_input($_SESSION['loginuser']['id']) ."'");
 $data = tep_db_fetch_array($stmt);
 ?>
 

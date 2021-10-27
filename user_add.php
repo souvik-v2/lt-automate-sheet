@@ -11,7 +11,7 @@ include('includes/header.php');
 
 if (isset($_GET['action']) && ($_GET['action'] == 'adduser')) {
     //echo "<pre>"; print_r($_POST);
-    $sql = "INSERT INTO `user_accounts` (`username`, `password`, `email`, `role`, `status`) VALUES ('" . $_POST['username'] . "', '" . md5($_POST['password']). "', '" . $_POST['email']. "', '" . $_POST['role']. "', '0')";
+    $sql = "INSERT INTO `user_accounts` (`username`, `password`, `email`, `role`, `status`) VALUES ('" . tep_db_input($_POST['username']) . "', '" . md5(tep_db_input($_POST['password'])). "', '" . tep_db_input($_POST['email']). "', '" . tep_db_input($_POST['role']). "', '0')";
     $result = tep_db_query($sql);
     $_SESSION['success'] = "Account created. Wait until admin approves your registration.";
     tep_redirect('user_management.php');

@@ -9,8 +9,8 @@ if (!isset($_SESSION['loginuser']['loggedin'])) {
 include('includes/header.php');
 
 if (isset($_GET['action']) && ($_GET['action'] === 'deleteproject')) {
-    $result = tep_db_query("DELETE FROM project WHERE project_id = '" . $_GET['project_id'] . "'");
-    $result_sprint = tep_db_query("DELETE FROM sprint_data WHERE project_id = '" . $_GET['project_id'] . "'");
+    $result = tep_db_query("DELETE FROM project WHERE project_id = '" . tep_db_input($_GET['project_id']) . "'");
+    $result_sprint = tep_db_query("DELETE FROM sprint_data WHERE project_id = '" . tep_db_input($_GET['project_id']) . "'");
     $_SESSION['success'] = "Project and sprint deleted successfully!!!";
     tep_redirect('project.php');
 }

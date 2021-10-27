@@ -9,7 +9,7 @@ if (!isset($_SESSION['loginuser']['loggedin'])) {
 include('includes/header.php');
 
 
-$result = tep_db_query("SELECT `sprint_id`, `project_id`, `sprint_name`, `planned_story_point`, `actual_delivered`, `v2_delivered`, `lt_delivered`, `rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, `lt_reopen_percentage`, `v2_carryover_percentage`, `lt_carryover_percentage`, `planned_vs_completed_ratio` FROM sprint_data WHERE sprint_id = '" . $_GET['sprint_id'] . "'");
+$result = tep_db_query("SELECT `sprint_id`, `project_id`, `sprint_name`, `planned_story_point`, `actual_delivered`, `v2_delivered`, `lt_delivered`, `rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, `lt_reopen_percentage`, `v2_carryover_percentage`, `lt_carryover_percentage`, `planned_vs_completed_ratio` FROM sprint_data WHERE sprint_id = '" . tep_db_input($_GET['sprint_id']) . "'");
 
 $row = tep_db_fetch_array($result);
 //
@@ -25,7 +25,12 @@ if (tep_db_num_rows($p_result) > 0) {
 if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
     //case: new
     //echo "<pre>"; print_r($_POST);
-    // check there are no errors
+    $dev_aql = tep_db_query("SELECT developers FROM project WHERE project_id = '" . tep_db_input($_POST['project_id']) . "'");
+    $dev_result = tep_db_fetch_array($dev_aql);
+    $_SESSION['developers'] = $dev_result['developers'];
+    //
+    $dev_name_array = explode(', ', $_SESSION['developers']);
+    //
     $csv = array();
     $csv_rw = array();
     $total_story_count = 0;
@@ -97,8 +102,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
                 if (strpos($csv[0][$i], 'Sprint') !== false) {
                     $sprint_key[] = $i;
                 }
-                if (strpos($csv[0][$i], 'Resource') !== false) {
-                    $resource_key = $i;
+                if (strpos($csv[0][$i], 'Assignee') !== false) {
+                    $dev_key = $i;
                 }
             }
             $story = array();
@@ -108,23 +113,23 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
                         $story['story'][] = $csv[$i][$point_key];
                     }
                     if (isset($sprint_key) && $j == 0) {
-                        $story['sprint'][] = $csv[$i][$sprint_key[count($sprint_key) - 2]];
+                        $story['sprint'][] = $csv[$i][$sprint_key[1]];
                     }
-                    if ($resource_key && $j == 0) {
-                        $story['resource'][] = $csv[$i][$resource_key];
+                    if ($dev_key && $j == 0) {
+                        $story['developers'][] = $csv[$i][$dev_key];
                     }
                 }
             }
             $story_point_array = $story['story'];
             $sprint_point_array = $story['sprint'];
-            $resource_point_array = $story['resource'];
-            foreach ($resource_point_array as $k => $v) {
-                if ($v == 1) {
+            $developers_point_array = $story['developers'];
+            foreach ($developers_point_array as $k => $v) {
+                if (in_array($v, $dev_name_array)) {
                     $v2_score[] = $story_point_array[$k];
-                    $v2_carryover[] = (count($sprint_point_array) && ($sprint_point_array[$k] != '') > 0 ? $story_point_array[$k] : 0);
+                    $v2_carryover[] = (count($sprint_point_array) > 0  && ($sprint_point_array[$k] != '') ? $story_point_array[$k] : 0);
                 } else {
                     $lt_score[] = $story_point_array[$k];
-                    $lt_carryover[] = (count($sprint_point_array) && ($sprint_point_array[$k] != '') > 0 ? $story_point_array[$k] : 0);
+                    $lt_carryover[] = (count($sprint_point_array) > 0 && ($sprint_point_array[$k] != '')  ? $story_point_array[$k] : 0);
                 }
             }
             $total_story_count = array_sum($story_point_array);
@@ -172,8 +177,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
                 if (strpos($csv_rw[0][$i], 'Sprint') !== false) {
                     $rw_sprint_key[] = $i;
                 }
-                if (strpos($csv_rw[0][$i], 'Resource') !== false) {
-                    $rw_resource_key = $i;
+                if (strpos($csv_rw[0][$i], 'Assignee') !== false) {
+                    $rw_dev_key = $i;
                 }
             }
             $rw_story = array();
@@ -185,16 +190,16 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
                     if (count($rw_sprint_key)>0 && $j == 0) {
                         $rw_story['rw_sprint'][] = $csv_rw[$i][$rw_sprint_key[count($rw_sprint_key)-1]];
                     }
-                    if ($rw_resource_key && $j == 0) {
-                        $rw_story['rw_resource'][] = $csv_rw[$i][$rw_resource_key];
+                    if ($rw_dev_key && $j == 0) {
+                        $rw_story['rw_developers'][] = $csv_rw[$i][$rw_dev_key];
                     }
                 }
             }
             $rw_story_point_array = $rw_story['rw_story'];
             $rw_sprint_point_array = $rw_story['rw_sprint'];
-            $rw_resource_point_array = $rw_story['rw_resource'];
-            foreach ($rw_resource_point_array as $k => $v) {
-                if ($v == 1) {
+            $rw_developers_point_array = $rw_story['rw_developers'];
+            foreach ($rw_developers_point_array as $k => $v) {
+                if (in_array($v, $dev_name_array)) {
                     $rw_v2_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
                 } else {
                     $rw_lt_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
@@ -246,8 +251,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
 				<div class="form-group">
 				  <label class="control-label col-sm-4" for="fname">Project Name:</label>
 				  <div class="col-sm-10">          
-                    <select name="project_id" class="form-control">
-                        <option value="">Select Project</option>
+                    <select name="project_id" class="form-control" required onchange="getID(this.value)">
+                        <option value="" disabled="disabled">Select Project</option>
                         <?php echo $option_list; ?>
                     </select>
 				  </div>
@@ -281,5 +286,18 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
 		</div>
 	</div>
 </div>
-
+<script>
+    function getID(pid) {
+        $.ajax({
+            url: "ajax_required.php",
+            type: "get", //send it through get method
+            data: {
+                project_id: pid
+            },
+            success: function(response) {
+                //Do Something
+            }
+        });
+    }
+</script>
 <?php include_once('includes/footer.php'); ?>

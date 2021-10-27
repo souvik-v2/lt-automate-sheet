@@ -22,7 +22,7 @@
             </div>
         </div>
             <?php 
-            $p_query = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . $_POST['project_id'] . "'");
+            $p_query = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . tep_db_input($_POST['project_id']) . "'");
             $prow = tep_db_fetch_array($p_query); ?>
             <div class="project-details">
                 <div class="heading">
@@ -122,75 +122,8 @@
                 </div>
             </div>
 
-            <!--<div class="row mb-3">
-                <div class="col">
-                    <h4>Sprint Info</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Sprint Name</th>
-                                    <th scope="col">Planned Story Point</th>
-                                    <th scope="col">Actual Delivered</th>
-                                    <th scope="col">V2 Delivered</th>
-                                    <th scope="col">LT Delivered</th>
-                                    <th scope="col">V2 Reopen</th>
-                                    <th scope="col">LT Reopen</th>
-                                    <th scope="col">V2 Carryover</th>
-                                    <th scope="col">LT Carryover</th>
-                                    <th scope="col">QA Passed</th>
-                                    <th scope="col">V2 Reopen Percentage</th>
-                                    <th scope="col">LT Reopen Percentage</th>
-                                    <th scope="col">V2 Carryover Percentage</th>
-                                    <th scope="col">LT Carryover Percentage</th>
-                                    <th scope="col">Planned Vs Completed ratio</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $c = 0;
-                                //while ($row = tep_db_fetch_array($result)) {
-                                foreach ($sprint_data as $row) {
-                                ?>
-                                    <tr>
-                                        <th scope="row"><?php echo ++$c; ?> </th>
-                                        <td><?php echo $row["sprint_name"]; ?></td>
-                                        <td><?php echo $row["planned_story_point"]; ?></td>
-                                        <td><?php echo $row["actual_delivered"]; ?></td>
-                                        <td><?php echo $row["v2_delivered"]; ?></td>
-                                        <td><?php echo $row["lt_delivered"]; ?></td>
-                                        <td><?php echo $row["rework"]; ?></td>
-                                        <td><?php echo $row["lt_reoponed_sp"]; ?></td>
-                                        <td><?php echo $row["v2_carryover"]; ?></td>
-                                        <td><?php echo $row["lt_carryover"]; ?></td>
-                                        <td><?php echo $row["qa_passed"]; ?></td>
-                                        <td><?php echo $row["v2_reopen_percentage"]; ?>%</td>
-                                        <td><?php echo $row["lt_reopen_percentage"]; ?>%</td>
-                                        <td><?php echo $row["v2_carryover_percentage"]; ?>%</td>
-                                        <td><?php echo $row["lt_carryover_percentage"]; ?>%</td>
-                                        <td><?php echo $row["planned_vs_completed_ratio"]; ?>%</td>
-                                        <td><a href="edit.php?action=editsprint&project_id=<?php echo $row['project_id']; ?>&sprint_id=<?php echo $row['sprint_id']; ?>"><i class="far fa-edit"></i></a> |
-                                            <a onclick='deleteConfirm("<?php echo $row['sprint_id']; ?>")' href="javascript:void(0)"><i class="far fa-trash-alt"></i></a>
-                                        </td>
-                                    </tr>
-                                <?php
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>-->
-
     <?php
         } else {
-            //tep_redirect('home.php');
             ?>
             <div class="row mb-3 mt-3">
                 <div class="col text-center">

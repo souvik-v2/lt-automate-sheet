@@ -26,9 +26,7 @@ session_start();
 	<?php } ?>
 	<script>
 		$(document).ready(function() {
-			$("input").autocomplete({
-				disabled: true
-			});
+			$('form').attr('autocomplete', 'off');
 			setTimeout(function() {
 				<?php unset($_SESSION['error'], $_SESSION['success']); ?>;
 			}, 5000);
@@ -38,7 +36,6 @@ session_start();
 	<div class="container-fluid">
 		<div class="row main-content bg-success text-center">
 			<div class="col-md-4 text-center company__info">
-				<span class="company__logo"><h2><span class="fa fa-android"></span></h2></span>
 				<h4 class="company_title"><img src="images/v-2-logo.svg" alt="V2-logo"/></h4>
 			</div>
 			<div class="col-md-8 col-xs-12 col-sm-12 login_form ">
@@ -49,10 +46,10 @@ session_start();
 					<div class="row">
 						<form action="authenticate.php" method="post" class="form-group">
 							<div class="row">
-								<input type="text" autocomplete="off" name="username" id="username" class="form__input" placeholder="Username" required />
+								<input type="text" autocomplete="nope" name="username" id="username" class="form__input" placeholder="Username" required />
 							</div>
 							<div class="row">
-								<input type="password" autocomplete="off" name="password" id="password" class="form__input" placeholder="Password" required />
+								<input type="password" autocomplete="new-password" name="password" id="password" class="form__input" placeholder="Password" required />
 							</div>
 							<div class="row">
 								<input type="submit" value="Submit" class="btn">

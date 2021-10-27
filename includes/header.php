@@ -62,9 +62,7 @@
 	<?php } ?>
 	<script>
 		$(document).ready(function() {
-			$("input").autocomplete({
-				disabled: true
-			});
+			$('form').attr('autocomplete', 'off');
 			setTimeout(function() {
 				<?php unset($_SESSION['error'], $_SESSION['success']); ?>;
 			}, 5000);

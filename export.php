@@ -18,7 +18,7 @@ if(isset($_GET['project_id'])) {
     // Excel file name for download 
     $fileName = "LT-SimplifiedMetrics-" . time(); 
 
-    $project_sql = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . $_GET['project_id'] . "'");
+    $project_sql = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . tep_db_input($_GET['project_id']) . "'");
 
     
 
@@ -136,7 +136,7 @@ if(isset($_GET['project_id'])) {
         // sprint data
         //$flag = ($project_data['is_sprint'] == 1 ? " order by s.sprint_id desc LIMIT 0, 8" : " order by s.sprint_id desc LIMIT 0, 6");
 
-        $sprint_sql = tep_db_query("SELECT s.`sprint_name`, s.`planned_story_point`, s.`actual_delivered`, s.`v2_delivered`, s.`lt_delivered`, s.`rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, s.`lt_reopen_percentage`, s.`v2_carryover_percentage`, s.`lt_carryover_percentage`, s.`planned_vs_completed_ratio` FROM project p, sprint_data s WHERE p.project_id = s.project_id AND p.project_id = '" . $_GET['project_id'] . "'");
+        $sprint_sql = tep_db_query("SELECT s.`sprint_name`, s.`planned_story_point`, s.`actual_delivered`, s.`v2_delivered`, s.`lt_delivered`, s.`rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, s.`lt_reopen_percentage`, s.`v2_carryover_percentage`, s.`lt_carryover_percentage`, s.`planned_vs_completed_ratio` FROM project p, sprint_data s WHERE p.project_id = s.project_id AND p.project_id = '" . tep_db_input($_GET['project_id']) . "'");
 
         //SPRINT VALUE
         $counter = 2;
@@ -192,6 +192,7 @@ if(isset($_GET['project_id'])) {
         //write in excel and save in root folder
         $writer = new Xlsx($spreadsheet);
         $writer->save('download/'.$fileName.'.xlsx');
+        return $fileName;
     }
 }
 

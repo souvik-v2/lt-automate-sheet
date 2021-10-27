@@ -21,6 +21,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
     //case: new
     //echo "<pre>"; print_r($_POST);
     // check there are no errors
+    $dev_name_array = explode(', ', $_SESSION['developers']);
     $csv = array();
     $csv_rw = array();
     $total_story_count = 0;
@@ -72,8 +73,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
                 if (strpos($csv[0][$i], 'Sprint') !== false) {
                     $sprint_key[] = $i;
                 }
-                if (strpos($csv[0][$i], 'Resource') !== false) {
-                    $resource_key = $i;
+                if (strpos($csv[0][$i], 'Assignee') !== false) {
+                    $dev_key = $i;
                 }
             }
             $story = array();
@@ -83,18 +84,19 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
                         $story['story'][] = $csv[$i][$point_key];
                     }
                     if (isset($sprint_key) && $j == 0) {
-                        $story['sprint'][] = $csv[$i][$sprint_key[count($sprint_key) - 2]];
+                        $story['sprint'][] = $csv[$i][$sprint_key[1]];
                     }
-                    if ($resource_key && $j == 0) {
-                        $story['resource'][] = $csv[$i][$resource_key];
+                    if ($dev_key && $j == 0) {
+                        $story['developers'][] = $csv[$i][$dev_key];
                     }
                 }
             }
             $story_point_array = $story['story'];
             $sprint_point_array = $story['sprint'];
-            $resource_point_array = $story['resource'];
-            foreach ($resource_point_array as $k => $v) {
-                if ($v == 1) {
+            $developers_point_array = $story['developers'];
+
+            foreach ($developers_point_array as $k => $v) {
+                if (in_array($v, $dev_name_array)) {
                     $v2_score[] = $story_point_array[$k];
                     $v2_carryover[] = ((count($sprint_point_array) > 0) && ($sprint_point_array[$k] != '')  ? $story_point_array[$k] : 0);
                 } else {
@@ -147,8 +149,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
                 if (strpos($csv_rw[0][$i], 'Sprint') !== false) {
                     $rw_sprint_key[] = $i;
                 }
-                if (strpos($csv_rw[0][$i], 'Resource') !== false) {
-                    $rw_resource_key = $i;
+                if (strpos($csv_rw[0][$i], 'Assignee') !== false) {
+                    $rw_dev_key = $i;
                 }
             }
             $rw_story = array();
@@ -160,16 +162,16 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
                     if (isset($rw_sprint_key) && $j == 0) {
                         $rw_story['rw_sprint'][] = $csv_rw[$i][$rw_sprint_key[count($rw_sprint_key) - 1]];
                     }
-                    if ($rw_resource_key && $j == 0) {
-                        $rw_story['rw_resource'][] = $csv_rw[$i][$rw_resource_key];
+                    if ($rw_dev_key && $j == 0) {
+                        $rw_story['rw_developers'][] = $csv_rw[$i][$rw_dev_key];
                     }
                 }
             }
             $rw_story_point_array = $rw_story['rw_story'];
             $rw_sprint_point_array = $rw_story['rw_sprint'];
-            $rw_resource_point_array = $rw_story['rw_resource'];
-            foreach ($rw_resource_point_array as $k => $v) {
-                if ($v == 1) {
+            $rw_developers_point_array = $rw_story['rw_developers'];
+            foreach ($rw_developers_point_array as $k => $v) {
+                if (in_array($v, $dev_name_array)) {
                     $rw_v2_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
                 } else {
                     $rw_lt_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
@@ -222,8 +224,8 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
 				<div class="form-group">
 				  <label class="control-label col-sm-4" for="fname">Project Name:</label>
 				  <div class="col-sm-10">          
-                    <select name="project_id" class="form-control">
-                        <option value="">Select Project</option>
+                    <select name="project_id" class="form-control" onchange="getID(this.value)" required>
+                        <option value="" disabled="disabled">Select Project</option>
                         <?php echo $option_list; ?>
                     </select>
 				  </div>
@@ -255,4 +257,18 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
 		</div>
 	</div>
 </div>
+<script>
+    function getID(pid) {
+        $.ajax({
+            url: "ajax_required.php",
+            type: "get", //send it through get method
+            data: {
+                project_id: pid
+            },
+            success: function(response) {
+                //Do Something
+            }
+        });
+    }
+</script>
 <?php include_once('includes/footer.php'); ?>
