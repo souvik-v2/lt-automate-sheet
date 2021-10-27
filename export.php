@@ -192,7 +192,8 @@ if(isset($_GET['project_id'])) {
         //write in excel and save in root folder
         $writer = new Xlsx($spreadsheet);
         $writer->save('download/'.$fileName.'.xlsx');
-        return $fileName;
+        //download file in locally
+        echo $fileName;
     }
 }
 

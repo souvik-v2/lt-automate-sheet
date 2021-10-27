@@ -51,9 +51,6 @@ if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')
 <div class="container">
     <?php include('project_sprint.php'); ?>
 </div>
-<div class="content-fluid file-dialog">
-    <p>Click to download <a href="javascript:void(0)" onclick="callDownload('<?= $_SESSION['filename']; ?>')"><?= $_SESSION['filename']; ?>.xlsx</a> file from server.</p>
-</div>
 <script src="includes/chart.js?v=<?php echo time(); ?>"></script>
 <script type="text/javascript">
     function deleteConfirm(id) {
@@ -82,10 +79,12 @@ if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')
             },
             success: function(response) {
                 //Do Something
-                $(".file-dialog").show();
-            },
-            error: function(xhr) {
-                //Do Something to handle error
+                if (confirm("Are you want to download file?")) {
+                    var win = window.open('download/' + response + '.xlsx');
+                    if (!win) {
+                        alert('Please allow popups for this website');
+                    }
+                }
             }
         });
     }
