@@ -19,7 +19,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
 		'project_manager' =>  tep_db_input($_POST['project_manager']),
 		'client_poc' =>  tep_db_input($_POST['client_poc']),
 		'client_feedback' =>  tep_db_input($_POST['client_feedback']),
-		'team_allocation' =>  tep_db_input($_POST['team_allocation']),
+		//'team_allocation' =>  tep_db_input($_POST['team_allocation']),
 		'offshore_team_allocated' =>  tep_db_input($_POST['offshore_team_allocated']),
 		'offshore_team_billable' =>  tep_db_input($_POST['offshore_team_billable']),
 		'onsite_team_allocated' =>  tep_db_input($_POST['onsite_team_allocated']),
@@ -27,7 +27,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
 		'status_date' =>  'now()',
 		'overall_status' =>  tep_db_input($_POST['overall_status']),
 		'is_sprint' =>  tep_db_input($_POST['is_sprint']),
-		'developers' => strtolower(trim($developers))
+		'developers' => trim($developers)
 	);
 	//
 	tep_db_perform('project', $sql_data_array);
@@ -48,7 +48,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 		'project_manager' =>  tep_db_input($_POST['project_manager']),
 		'client_poc' =>  tep_db_input($_POST['client_poc']),
 		'client_feedback' =>  tep_db_input($_POST['client_feedback']),
-		'team_allocation' =>  tep_db_input($_POST['team_allocation']),
+		//'team_allocation' =>  tep_db_input($_POST['team_allocation']),
 		'offshore_team_allocated' =>  tep_db_input($_POST['offshore_team_allocated']),
 		'offshore_team_billable' =>  tep_db_input($_POST['offshore_team_billable']),
 		'onsite_team_allocated' =>  tep_db_input($_POST['onsite_team_allocated']),
@@ -56,7 +56,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 		'status_date' =>  tep_db_input($_POST['status_date']),
 		'overall_status' =>  tep_db_input($_POST['overall_status']),
 		'is_sprint' =>  tep_db_input($_POST['is_sprint']),
-		'developers' => strtolower(trim($developers))
+		'developers' => trim($developers)
 	);
 	tep_db_perform('project', $sql_data_array, 'update', 'project_id=' . $_POST['project_id']);
 
@@ -107,12 +107,12 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 								<input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" value="<?php echo $data['client_feedback'] ?>" />
 							</div>
 						</div>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<label class="control-label col-sm-6" for="comment">Team Allocation:</label>
 							<div class="col-sm-10">
 								<input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" value="<?php echo $data['team_allocation'] ?>" />
 							</div>
-						</div>
+						</div>-->
 						<div class="form-group">
 							<label class="control-label col-sm-6" for="comment">Offshore Team Allocated:</label>
 							<div class="col-sm-10">
@@ -229,12 +229,12 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 							<input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" />
 						</div>
 					</div>
-					<div class="form-group">
+					<!--<div class="form-group">
 						<label class="control-label col-sm-6" for="comment">Team Allocation:</label>
 						<div class="col-sm-10">
 							<input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" />
 						</div>
-					</div>
+					</div>-->
 					<div class="form-group">
 						<label class="control-label col-sm-6" for="comment">Offshore Team Allocated:</label>
 						<div class="col-sm-10">

@@ -20,8 +20,10 @@ if (tep_db_num_rows($p_result) > 0) {
 if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
     //case: new
     //echo "<pre>"; print_r($_POST);
-    // check there are no errors
-    $dev_name_array = explode(', ', $_SESSION['developers']);
+    $dev_sql = tep_db_query("SELECT developers FROM project WHERE project_id = '" . tep_db_input($_POST['project_id']) . "'");
+    $dev_result = tep_db_fetch_array($dev_sql);
+    $dev_name_array = explode(', ', $dev_result['developers']);
+
     $csv = array();
     $csv_rw = array();
     $total_story_count = 0;

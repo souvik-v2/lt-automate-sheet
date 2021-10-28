@@ -27,9 +27,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatesprint')) {
     //echo "<pre>"; print_r($_POST);
     $dev_aql = tep_db_query("SELECT developers FROM project WHERE project_id = '" . tep_db_input($_POST['project_id']) . "'");
     $dev_result = tep_db_fetch_array($dev_aql);
-    $_SESSION['developers'] = $dev_result['developers'];
-    //
-    $dev_name_array = explode(', ', $_SESSION['developers']);
+    $dev_name_array = explode(', ', $dev_result['developers']);
     //
     $csv = array();
     $csv_rw = array();

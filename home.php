@@ -88,11 +88,5 @@ if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')
             }
         });
     }
-
-    function callDownload(fname) {
-        //alert(fname);
-        window.open('download/' + fname + '.xlsx');
-        $(".file-dialog").remove();
-    }
 </script>
 <?php include_once('includes/footer.php'); ?>

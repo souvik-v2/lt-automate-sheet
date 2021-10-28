@@ -98,10 +98,12 @@ if (isset($_GET['action']) && ($_GET['action'] === 'deletesprint')) {
             },
             success: function(response) {
                 //Do Something
-                alert('Excelsheet downloaded successfully!!');
-            },
-            error: function(xhr) {
-                //Do Something to handle error
+                if (confirm("Are you want to download file?")) {
+                    var win = window.open('download/' + response + '.xlsx');
+                    if (!win) {
+                        alert('Please allow popups for this website');
+                    }
+                }
             }
         });
     }
