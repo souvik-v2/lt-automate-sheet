@@ -184,3 +184,49 @@ form {
   padding: 15 px 10 px;
   text-align: center;
 }
+nav a {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+nav a.nav-link {
+  font-style: cursive;
+}
+nav a.navbar-brand {
+  letter-spacing: 3px;
+  font-weight: 700;
+}
+.alert {
+  display: flex;
+  justify-content: space-between;
+}
+
+.alert>button {
+  background: transparent;
+  border: 1px solid #90ee90;
+  font-size: 17px;
+  border-radius: 100px;
+}
+#field {
+  display: flex;
+  justify-content: space-between;
+}
+
+#field input {
+  max-height: 42px;
+}
+
+#b1 {
+  margin: 0 5px;
+}
+
+.rw {
+  display: flex;
+  justify-content: space-between;
+}
+
+span.rm {
+  font-size: 30px;
+  color: red;
+  margin-left: 8px;
+  cursor: pointer;
+}

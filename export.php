@@ -1,12 +1,5 @@
 <?php
-session_start();
-error_reporting(1);
-
-require('includes/db.php');
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.php');
-}
+require('includes/application_top.php');
 
 //PHP Office
 require 'vendor/autoload.php';
@@ -18,7 +11,7 @@ if(isset($_GET['project_id'])) {
     // Excel file name for download 
     $fileName = "LT-SimplifiedMetrics-" . time(); 
 
-    $project_sql = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . tep_db_input($_GET['project_id']) . "'");
+    $project_sql = $con->run("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id = ?" , array($_GET['project_id']));
 
     
 
@@ -74,7 +67,7 @@ if(isset($_GET['project_id'])) {
          ];
   
         $sheet->getStyle('T1:AH100')->applyFromArray($styleArray2);
-        $sheet->getStyle('AJ12:AL17')->applyFromArray($styleArray2);
+        $sheet->getStyle('AJ1:AL99')->applyFromArray($styleArray2);
 
         //project dashboard title
         $sheet->setCellValue('B3', 'PROJECT HEALTH DASHBOARD');
@@ -129,23 +122,23 @@ if(isset($_GET['project_id'])) {
         $sheet->setCellValue('AL2', 'Sum of LT Delivered');
 
         //sprint short table
-        $sheet->setCellValue('AJ12', 'Sprint');
-        $sheet->setCellValue('AK12', 'V2 Delivered');
-        $sheet->setCellValue('AL12', 'LT Delivered');
+        $sheet->setCellValue('AJ30', 'Sprint');
+        $sheet->setCellValue('AK30', 'V2 Delivered');
+        $sheet->setCellValue('AL30', 'LT Delivered');
 
         // sprint data
         //$flag = ($project_data['is_sprint'] == 1 ? " order by s.sprint_id desc LIMIT 0, 8" : " order by s.sprint_id desc LIMIT 0, 6");
 
-        $sprint_sql = tep_db_query("SELECT s.`sprint_name`, s.`planned_story_point`, s.`actual_delivered`, s.`v2_delivered`, s.`lt_delivered`, s.`rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, s.`lt_reopen_percentage`, s.`v2_carryover_percentage`, s.`lt_carryover_percentage`, s.`planned_vs_completed_ratio` FROM project p, sprint_data s WHERE p.project_id = s.project_id AND p.project_id = '" . tep_db_input($_GET['project_id']) . "'");
+        $sprint_sql = $con->run("SELECT s.`sprint_name`, s.`planned_story_point`, s.`actual_delivered`, s.`v2_delivered`, s.`lt_delivered`, s.`rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, s.`lt_reopen_percentage`, s.`v2_carryover_percentage`, s.`lt_carryover_percentage`, s.`planned_vs_completed_ratio` FROM project p, sprint_data s WHERE p.project_id = s.project_id AND p.project_id = ? ORDER BY s.sprint_id DESC", array($_GET['project_id']));
 
         //SPRINT VALUE
         $counter = 2;
-        $c=13;
+        $c=31;
         $i=3;
         $v2_delivered = 0;
         $lt_delivered = 0;
         $trow = tep_db_num_rows($sprint_sql);
-        foreach($sprint_sql as $sprint_data) {
+        foreach(tep_db_fetch_all($sprint_sql) as $sprint_data) {
 
             $sheet->setCellValue('AJ'.$i, $sprint_data['sprint_name']);
             $sheet->setCellValue('AK'.$i, $sprint_data['v2_delivered']);

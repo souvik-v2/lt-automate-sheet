@@ -1,21 +1,20 @@
 <?php
-session_start();
-
-require('includes/db.php');
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.php');
-}
+require('includes/application_top.php');
 include('includes/header.php');
 
-if (isset($_GET['action']) && ($_GET['action'] === 'deleteproject')) {
-    $result = tep_db_query("DELETE FROM project WHERE project_id = '" . tep_db_input($_GET['project_id']) . "'");
-    $result_sprint = tep_db_query("DELETE FROM sprint_data WHERE project_id = '" . tep_db_input($_GET['project_id']) . "'");
-    $_SESSION['success'] = "Project and sprint deleted successfully!!!";
+if (isset($action) && ($action == 'deleteproject')) {
+    try {
+        $result = $con->run("DELETE FROM project WHERE project_id = ?", array($_GET['project_id']));
+        $result_sprint = $con->run("DELETE FROM sprint_data WHERE project_id = ?", array($_GET['project_id']));
+        $_SESSION['success'] = "Project and sprint deleted successfully!!!";
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
+    
     tep_redirect('project.php');
 }
 
-$p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status` FROM project order by project_id desc");
+$p_result = $con->run("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status` FROM project ORDER BY project_id DESC");
 ?>
 <div class="container-fluid">
     <div class="row mt-3 mb-3">
@@ -67,7 +66,7 @@ $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager
                             <td><?php echo date('d-M-Y', strtotime($row["status_date"])); ?></td>
                             <td><?php echo ucfirst($row["overall_status"]); ?></td>
                             <td><a href="project_edit.php?action=editproject&project_id=<?php echo $row['project_id']; ?>"><i class="far fa-edit"></i></a> |
-                                <a onclick='deleteConfirm("<?php echo $row['project_id']; ?>")' href="javascript:void(0)"><i class="far fa-trash-alt"></i></a>
+                                <a onclick='deleteConfirmProject("<?php echo $row['project_id']; ?>")' href="javascript:void(0)"><i class="far fa-trash-alt"></i></a>
                             </td>
                         </tr>
                     <?php
@@ -78,12 +77,4 @@ $p_result = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager
         </div>
     </div>
 </div>
-<script>
-    function deleteConfirm(id) {
-        //console.log(id);
-        if (confirm("Are you sure you want to delete this project? It will also delete all sprint data.")) {
-            location.href = "project.php?action=deleteproject&project_id=" + id;
-        }
-    }
-</script>
 <?php include_once('includes/footer.php'); ?>

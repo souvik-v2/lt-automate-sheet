@@ -1,71 +1,73 @@
 <?php
-session_start();
-
-require('includes/db.php');
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loginuser']['loggedin'])) {
-	tep_redirect('index.php');
-}
+require('includes/application_top.php');
 include('includes/header.php');
 
-if (isset($_GET['action']) && ($_GET['action'] === 'newproject')) {
+if (isset($action) && ($action == 'newproject')) {
 	//case: new
-	//echo "<pre>"; print_r($_POST['developers']); //die();
 	$developers = implode(', ', $_POST['developers']);
 
 	$sql_data_array = array(
-		'project_name' =>  tep_db_input($_POST['project_name']),
-		'delivery_manager' =>  tep_db_input($_POST['delivery_manager']),
-		'project_manager' =>  tep_db_input($_POST['project_manager']),
-		'client_poc' =>  tep_db_input($_POST['client_poc']),
-		'client_feedback' =>  tep_db_input($_POST['client_feedback']),
-		//'team_allocation' =>  tep_db_input($_POST['team_allocation']),
-		'offshore_team_allocated' =>  tep_db_input($_POST['offshore_team_allocated']),
-		'offshore_team_billable' =>  tep_db_input($_POST['offshore_team_billable']),
-		'onsite_team_allocated' =>  tep_db_input($_POST['onsite_team_allocated']),
-		'onsite_team_billable' =>  tep_db_input($_POST['onsite_team_billable']),
+		'project_name' =>  $_POST['project_name'],
+		'delivery_manager' =>  $_POST['delivery_manager'],
+		'project_manager' =>  $_POST['project_manager'],
+		'client_poc' =>  $_POST['client_poc'],
+		'client_feedback' =>  $_POST['client_feedback'],
+		'team_allocation' => 0,
+		'offshore_team_allocated' =>  (int) $_POST['offshore_team_allocated'],
+		'offshore_team_billable' =>  (int) $_POST['offshore_team_billable'],
+		'onsite_team_allocated' =>  (int) $_POST['onsite_team_allocated'],
+		'onsite_team_billable' => 0,
 		'status_date' =>  'now()',
-		'overall_status' =>  tep_db_input($_POST['overall_status']),
-		'is_sprint' =>  tep_db_input($_POST['is_sprint']),
+		'overall_status' => $_POST['overall_status'],
+		'is_sprint' =>  (int) $_POST['is_sprint'],
 		'developers' => trim($developers)
 	);
 	//
-	tep_db_perform('project', $sql_data_array);
-	$_SESSION['success'] = "Record created successfully!!!";
+	try {
+		tep_db_perform($con, 'project', $sql_data_array);
+		$_SESSION['success'] = "Project created successfully!!!";
+
+	} catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
 	tep_redirect('project.php');
 }
 
-if (isset($_GET['action']) && ($_GET['action'] === 'editproject')) {
-	$usql = "SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, is_sprint, developers FROM project WHERE project_id = '" . tep_db_input($_GET['project_id']) . "'";
-	$uresult = tep_db_query($usql);
+if (isset($action) && ($action == 'editproject')) {
+	$usql = "SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, is_sprint, developers FROM project WHERE project_id = ?";
+	$uresult = $con->run($usql, array($_GET['project_id']));
 	$data = tep_db_fetch_array($uresult);
 }
-if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
+if (isset($action) && ($action == 'updateproject')) {
 	$developers = implode(', ', $_POST['developers']);
 	$sql_data_array = array(
-		'project_name' =>  tep_db_input($_POST['project_name']),
-		'delivery_manager' =>  tep_db_input($_POST['delivery_manager']),
-		'project_manager' =>  tep_db_input($_POST['project_manager']),
-		'client_poc' =>  tep_db_input($_POST['client_poc']),
-		'client_feedback' =>  tep_db_input($_POST['client_feedback']),
-		//'team_allocation' =>  tep_db_input($_POST['team_allocation']),
-		'offshore_team_allocated' =>  tep_db_input($_POST['offshore_team_allocated']),
-		'offshore_team_billable' =>  tep_db_input($_POST['offshore_team_billable']),
-		'onsite_team_allocated' =>  tep_db_input($_POST['onsite_team_allocated']),
-		'onsite_team_billable' =>  tep_db_input($_POST['onsite_team_billable']),
-		'status_date' =>  tep_db_input($_POST['status_date']),
-		'overall_status' =>  tep_db_input($_POST['overall_status']),
-		'is_sprint' =>  tep_db_input($_POST['is_sprint']),
+		'project_name' =>  $_POST['project_name'],
+		'delivery_manager' =>  $_POST['delivery_manager'],
+		'project_manager' =>  $_POST['project_manager'],
+		'client_poc' =>  $_POST['client_poc'],
+		'client_feedback' =>  $_POST['client_feedback'],
+		'team_allocation' => 0,
+		'offshore_team_allocated' =>  (int) $_POST['offshore_team_allocated'],
+		'offshore_team_billable' =>  (int) $_POST['offshore_team_billable'],
+		'onsite_team_allocated' =>  (int) $_POST['onsite_team_allocated'],
+		'onsite_team_billable' => 0,
+		'overall_status' =>  $_POST['overall_status'],
+		'is_sprint' =>  (int) $_POST['is_sprint'],
 		'developers' => trim($developers)
 	);
-	tep_db_perform('project', $sql_data_array, 'update', 'project_id=' . $_POST['project_id']);
+	try {
+		tep_db_perform($con, 'project', $sql_data_array, 'update', array('project_id', $_POST['project_id']));
+		$_SESSION['success'] = "Project updated successfully!!!";
 
-	$_SESSION['success'] = "Project updated successfully!!!";
+	} catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
+
 	tep_redirect('project.php');
 }
 ?>
 <div class="container contact">
-	<?php if (isset($_GET['action']) && ($_GET['action'] === 'editproject')) { ?>
+	<?php if (isset($action) && ($action == 'editproject')) { ?>
 		<div class="row mt-3">
 			<div class="col-md-3">
 				<div class="contact-info">
@@ -107,12 +109,6 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 								<input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" value="<?php echo $data['client_feedback'] ?>" />
 							</div>
 						</div>
-						<!--<div class="form-group">
-							<label class="control-label col-sm-6" for="comment">Team Allocation:</label>
-							<div class="col-sm-10">
-								<input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" value="<?php echo $data['team_allocation'] ?>" />
-							</div>
-						</div>-->
 						<div class="form-group">
 							<label class="control-label col-sm-6" for="comment">Offshore Team Allocated:</label>
 							<div class="col-sm-10">
@@ -229,12 +225,6 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 							<input type="text" class="form-control" placeholder="Client Feedback" name="client_feedback" />
 						</div>
 					</div>
-					<!--<div class="form-group">
-						<label class="control-label col-sm-6" for="comment">Team Allocation:</label>
-						<div class="col-sm-10">
-							<input type="number" class="form-control" placeholder="Team Allocation" name="team_allocation" />
-						</div>
-					</div>-->
 					<div class="form-group">
 						<label class="control-label col-sm-6" for="comment">Offshore Team Allocated:</label>
 						<div class="col-sm-10">
@@ -294,43 +284,3 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updateproject')) {
 	<?php } ?>
 </div>
 <?php include_once('includes/footer.php'); ?>
-<script>
-	$(function() {
-		$("#b1").click(function(e) {
-			e.preventDefault();
-			var r = Math.floor(Math.random() * 99) + 1;
-			$("#fieldList").append('<div class="rw" id="rmv_' + r + '"><input type="text" class="form-control developers mt-2" placeholder="Developers" name="developers[]" id="field' + r + '" /><span class="rm" id="d_' + r + '" onclick="rmInput(' + r + ')">-</span></div>');
-		});
-
-	});
-
-	function rmInput(r) {
-		$('#rmv_' + r).remove();
-	}
-</script>
-<style>
-	#field {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	#field input {
-		max-height: 42px;
-	}
-
-	#b1 {
-		margin: 0 5px;
-	}
-
-	.rw {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	span.rm {
-		font-size: 30px;
-		color: red;
-		margin-left: 8px;
-		cursor: pointer;
-	}
-</style>

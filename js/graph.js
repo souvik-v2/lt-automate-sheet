@@ -106,15 +106,18 @@ function getArraySum(a){
                 }
             });
 
+            var v2Dvr = getArraySum(v2_delivered);
             var sumQA = getArraySum(qa_passed);
             var sumRW = getArraySum(rework);
+            var qaPer = Math.round((sumQA/v2Dvr)*100);
+            var rwPer = Math.round((sumRW/v2Dvr)*100);
 
             var qualityChartData = {
                 labels: ['QA Passed', 'Reopen'],
                 datasets: [
                     {
                     label: 'Dataset 1',
-                    data: [sumQA, sumRW],
+                    data: [qaPer, rwPer],
                     backgroundColor: ['#3f51b5', '#fd7e14'],
                     }
                 ]

@@ -1,19 +1,24 @@
 <?php
-session_start();
-
-require('includes/db.php');
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.php');
-}
+require('includes/application_top.php');
 include('includes/header.php');
 
 
-if (isset($_GET['action']) && ($_GET['action'] == 'adduser')) {
-    //echo "<pre>"; print_r($_POST);
-    $sql = "INSERT INTO `user_accounts` (`username`, `password`, `email`, `role`, `status`) VALUES ('" . tep_db_input($_POST['username']) . "', '" . md5(tep_db_input($_POST['password'])). "', '" . tep_db_input($_POST['email']). "', '" . tep_db_input($_POST['role']). "', '0')";
-    $result = tep_db_query($sql);
-    $_SESSION['success'] = "Account created. Wait until admin approves your registration.";
+if (isset($action) && ($action == 'adduser')) {
+    $sql_data_array = array (
+        $_POST['username'],
+        md5(trim($_POST['password'])),
+        $_POST['email'],
+        $_POST['role'],
+        '0'
+    );
+
+    try {
+        $sql = "INSERT INTO `user_accounts` (`username`, `password`, `email`, `role`, `status`) VALUES (?, ?, ?, ?, ?)";
+        $result = $con->run($sql, $sql_data_array);
+        $_SESSION['success'] = "Account created. Wait until admin approves your registration.";
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
     tep_redirect('user_management.php');
 }
 ?>

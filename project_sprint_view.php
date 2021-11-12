@@ -11,7 +11,7 @@
         </div>
     </div>
     <?php
-    if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')) {
+    if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] == 'view')) {
         if (tep_db_num_rows($result) > 0) {
     ?>
         <div class="row mb-3 mt-3">
@@ -47,11 +47,6 @@
                                 <th scope="col">V2 Carryover</th>
                                 <th scope="col">LT Carryover</th>
                                 <th scope="col">QA Passed</th>
-                                <th scope="col">V2 Reopen Percentage</th>
-                                <th scope="col">LT Reopen Percentage</th>
-                                <th scope="col">V2 Carryover Percentage</th>
-                                <th scope="col">LT Carryover Percentage</th>
-                                <th scope="col">Planned Vs Completed ratio</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -73,13 +68,8 @@
                                     <td><?php echo $row["v2_carryover"]; ?></td>
                                     <td><?php echo $row["lt_carryover"]; ?></td>
                                     <td><?php echo $row["qa_passed"]; ?></td>
-                                    <td><?php echo $row["v2_reopen_percentage"]; ?>%</td>
-                                    <td><?php echo $row["lt_reopen_percentage"]; ?>%</td>
-                                    <td><?php echo $row["v2_carryover_percentage"]; ?>%</td>
-                                    <td><?php echo $row["lt_carryover_percentage"]; ?>%</td>
-                                    <td><?php echo $row["planned_vs_completed_ratio"]; ?>%</td>
-                                    <td><a href="edit.php?action=editsprint&project_id=<?php echo $row['project_id']; ?>&sprint_id=<?php echo $row['sprint_id']; ?>"><i class="far fa-edit"></i></a> |
-                                        <a onclick='deleteConfirm("<?php echo $row['sprint_id']; ?>")' href="javascript:void(0)"><i class="far fa-trash-alt"></i></a>
+                                    <td><a href="sprint_edit.php?action=editsprint&project_id=<?php echo $row['project_id']; ?>&sprint_id=<?php echo $row['sprint_id']; ?>"><i class="far fa-edit"></i></a> |
+                                        <a onclick='deleteConfirmSprint("<?php echo $row['sprint_id']; ?>")' href="javascript:void(0)"><i class="far fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                             <?php

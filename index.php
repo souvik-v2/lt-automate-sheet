@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+<?php require('includes/application_top.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

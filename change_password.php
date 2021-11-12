@@ -1,27 +1,24 @@
 <?php
-session_start();
-
-require('includes/db.php');
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.php');
-}
+require('includes/application_top.php');
 include('includes/header.php');
 
-if (isset($_GET['action']) && ($_GET['action'] === 'updatepassword')) {
-    $query = "SELECT password FROM user_accounts WHERE password = '". md5($_POST["old_password"]) . "' and id = ". $_POST['id'];
-    $result = tep_db_query($query);
+if (isset($action) && ($action == 'updatepassword')) {
+    try {
+        $query = "SELECT password FROM user_accounts WHERE password = ? and id = ?";
+        $result = $con->run($query, array(md5($_POST["old_password"]), $_POST['id']));
 
-    if(tep_db_num_rows($result) > 0) {
-        $new_psw = tep_db_fetch_array($result);
-        $sql = "UPDATE user_accounts SET password = '" . md5($_POST['new_password']) . "' WHERE id = '" . $_POST['id'] . "' ";
-        $result = tep_db_query($sql);
-        $_SESSION['success'] = "Password updated successfully!!!";
-        tep_redirect('user_management.php');
+        if (tep_db_num_rows($result) > 0) {
+            $sql = "UPDATE user_accounts SET password = ? WHERE id = ?";
+            $result = $con->run($sql, array(md5($_POST["new_password"]), $_POST['id']));
+            $_SESSION['success'] = "Password updated successfully!!!";
+            tep_redirect('user_management.php');
+        }
+        //update
+        $_SESSION['error'] = "Password not matched!!!";
+        tep_redirect('change_password.php?user_id=' . $_POST['id']);
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
     }
-    //update
-    $_SESSION['error'] = "Password not matched!!!";
-    tep_redirect('change_password.php?user_id='.$_POST['id']);
 }
 ?>
 <div class="container contact">
@@ -45,7 +42,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'updatepassword')) {
                     <div class="form-group">
                         <label class="control-label col-sm-6">New Password:</label>
                         <div class="col-sm-10">
-                        <input class="form-control" type="password" name="new_password" placeholder="New Password" />
+                            <input class="form-control" type="password" name="new_password" placeholder="New Password" />
                         </div>
                     </div>
                     <div class="form-group">

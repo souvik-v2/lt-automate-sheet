@@ -2,16 +2,18 @@
 session_start();
 require('includes/db.php');
 
-// Now we check if the data from the login form was submitted, isset() will check if the data exists.
+require('includes/function.php');
+
 if ( !isset($_POST['username'], $_POST['password']) ) {
-	// Could not get the data that should have been sent.
-	exit('Please fill both the username and password fields!');
+    $_SESSION['error'] = "Please fill both the username and password fields!";
+    tep_redirect('index.php');
 }
-// Prepare our SQL, preparing the SQL statement will prevent SQL injection.
-$username = tep_db_prepare_input($_POST['username']);
-$password = tep_db_prepare_input($_POST['password']);
-$check_query = tep_db_query("SELECT id, username, password, role FROM user_accounts WHERE username = '" . tep_db_input($username) . "' AND status = 1");
-if (tep_db_num_rows($check_query) == 1) {
+
+$username = $_POST['username'];
+$password = $_POST['password'];
+$check_query = $con->run("SELECT id, username, password, role FROM user_accounts WHERE username = ? AND status = ?", array($username, 1));
+
+if ($check_query->rowCount() > 0) {
     $check = tep_db_fetch_array($check_query);
 
     if (tep_validate_password($password, $check['password'])) {

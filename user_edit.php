@@ -1,23 +1,28 @@
 <?php
-session_start();
-
-require('includes/db.php');
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.php');
-}
+require('includes/application_top.php');
 include('includes/header.php');
 
-if (isset($_GET['action']) && ($_GET['action'] === 'updateuser')) {
+if (isset($action) && ($action == 'updateuser')) {
     //update
-    $sql = "UPDATE user_accounts SET username = '" . tep_db_input($_POST['username']) . "', email = '" . tep_db_input($_POST['email']) . "', role = '" . tep_db_input($_POST['role']) . "', status = '" . tep_db_input($_POST['status']) . "' WHERE id = '" . tep_db_input($_POST['id']) . "' ";
-    $result = tep_db_query($sql);
-    $_SESSION['success'] = "User updated successfully!!!";
-    //tep_redirect('user_edit.php?id=' . $_POST['id']);
+    $sql_data_array = array (
+        $_POST['username'],
+        $_POST['email'],
+        $_POST['role'],
+        $_POST['status'],
+        $_POST['id']
+    );
+
+    try {
+        $result = $con->run("UPDATE user_accounts SET username = ?, email = ?, role = ?, status = ? WHERE id = ?", $sql_data_array);
+        $_SESSION['success'] = "User updated successfully!!!";
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
+
     tep_redirect('user_management.php');
 }
 
-$result = tep_db_query("SELECT id, username, email, password, role, status FROM user_accounts WHERE id = '" . tep_db_input($_GET['id']) . "'");
+$result = $con->run("SELECT id, username, email, password, role, status FROM user_accounts WHERE id = ?", array($_GET['id']));
 $row = tep_db_fetch_array($result);
 ?>
 <div class="container contact">

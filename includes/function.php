@@ -1,28 +1,11 @@
 <?php
-function tep_db_connect($server = DB_SERVER, $username = DB_SERVER_USERNAME, $password = DB_SERVER_PASSWORD, $database = DB_DATABASE, $link = 'db_link')
-{
-  global $$link;
-
-  $$link = mysqli_connect($server, $username, $password, $database);
-
-  if (!mysqli_connect_errno()) {
-    mysqli_set_charset($$link, 'utf8');
-  }
-
-  @mysqli_query($$link, 'set session sql_mode=""');
-
-  return $$link;
-}
-
-function tep_db_input($string, $link = 'db_link')
-{
-  global $$link;
-
-  return mysqli_real_escape_string($$link, $string);
-}
-
+/*
+Page: function.php
+Author: Souvik Patra
+*/
 function tep_sanitize_string($string)
 {
+   //sanitize string
   $patterns = array('/ +/', '/[<>]/');
   $replace = array(' ', '_');
   return preg_replace($patterns, $replace, trim($string));
@@ -30,6 +13,7 @@ function tep_sanitize_string($string)
 
 function tep_db_prepare_input($string)
 {
+  //sanitize input field
   if (is_string($string)) {
     return trim(tep_sanitize_string(stripslashes($string)));
   } elseif (is_array($string)) {
@@ -45,6 +29,7 @@ function tep_db_prepare_input($string)
 
 function tep_not_null($value)
 {
+  // check field for empty
   if (is_array($value)) {
     if (sizeof($value) > 0) {
       return true;
@@ -62,6 +47,7 @@ function tep_not_null($value)
 // Redirect to another page or site
 function tep_redirect($url)
 {
+  // redirect to page url
   if (strpos($url, '&amp;') !== false) {
     $url = str_replace('&amp;', '&', $url);
   }
@@ -71,6 +57,7 @@ function tep_redirect($url)
 }
 function tep_session_register($variable)
 {
+  // register session with session variable
   if (!isset($GLOBALS[$variable])) {
     $GLOBALS[$variable] = null;
   }
@@ -79,6 +66,7 @@ function tep_session_register($variable)
 }
 function tep_validate_password($plain, $encrypted)
 {
+  // validate password
   if (tep_not_null($plain) && tep_not_null($encrypted)) {
     // split apart the hash / salt
     $stack = explode(':', $encrypted);
@@ -95,9 +83,34 @@ function tep_validate_password($plain, $encrypted)
   return false;
 }
 
-function tep_db_perform($table, $data = array(), $action = 'insert', $parameters = '', $link = 'db_link')
+function tep_db_fetch_array($db_query)
+{
+  //fetching for while loop
+  return $db_query->fetch(PDO::FETCH_ASSOC);
+}
+
+function tep_db_fetch_all($db_query)
+{
+  //fetching for foreach loop
+  return $db_query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function tep_db_num_rows($db_query)
+{
+  //returning number of rows
+  return $db_query->rowCount();
+}
+
+function tep_db_close($link = 'db_link')
+{
+  global $$link;
+  $$link = null;
+}
+
+function tep_db_perform($con, $table, $data = array(), $action = 'insert', $parameters = array())
 {
   reset($data);
+  $myarr = array();
   if ($action == 'insert') {
     $query = 'insert into ' . $table . ' (';
     foreach ($data as $columns => $value) {
@@ -109,12 +122,15 @@ function tep_db_perform($table, $data = array(), $action = 'insert', $parameters
       switch ((string)$value) {
         case 'now()':
           $query .= 'now(), ';
+          //array_push($myarr, 'now()');
           break;
         case 'null':
-          $query .= 'null, ';
+          $query .= '?, ';
+          array_push($myarr, 'null()');
           break;
         default:
-          $query .= '\'' . tep_db_input($value) . '\', ';
+          $query .= '?, ';
+          array_push($myarr, $value);
           break;
       }
     }
@@ -125,38 +141,20 @@ function tep_db_perform($table, $data = array(), $action = 'insert', $parameters
       switch ((string)$value) {
         case 'now()':
           $query .= $columns . ' = now(), ';
+          //array_push($myarr, 'now()');
           break;
         case 'null':
-          $query .= $columns .= ' = null, ';
+          $query .= $columns .= ' = ?, ';
+          array_push($myarr, 'null()');
           break;
         default:
-          $query .= $columns . ' = \'' . tep_db_input($value) . '\', ';
+          $query .= $columns . ' = ?, ';
+          array_push($myarr, $value);
           break;
       }
     }
-    $query = substr($query, 0, -2) . ' where ' . $parameters;
+    $query = substr($query, 0, -2) . ' where ' . $parameters[0] . '= ?';
+    array_push($myarr, $parameters[1]);
   }
-
-  return tep_db_query($query, $link);
-}
-
-function tep_db_fetch_array($db_query)
-{
-  return mysqli_fetch_array($db_query, MYSQLI_ASSOC);
-}
-
-function tep_db_num_rows($db_query)
-{
-  return mysqli_num_rows($db_query);
-}
-function tep_db_query($query, $link = 'db_link')
-{
-  global $$link;
-  $result = mysqli_query($$link, $query) or tep_db_error($query, mysqli_errno($$link), mysqli_error($$link));
-
-  return $result;
-}
-function tep_db_error($query, $errno, $error)
-{
-  die('<font color="#000000"><strong>' . $errno . ' - ' . $error . '<br /><br />' . $query . '<br /><br /><small><font color="#ff0000">[TEP STOP]</font></small><br /><br /></strong></font>');
+  $con->run($query, $myarr);
 }

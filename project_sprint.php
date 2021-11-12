@@ -11,7 +11,7 @@
         </div>
     </div>
     <?php
-    if (isset($_GET['action'], $_POST['project_id']) && ($_GET['action'] === 'view')) {
+    if (isset($action, $_POST['project_id']) && ($action == 'view')) {
         if (tep_db_num_rows($result) > 0) {
     ?>
         <div class="row mb-3 mt-3">
@@ -22,7 +22,7 @@
             </div>
         </div>
             <?php 
-            $p_query = tep_db_query("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id ='" . tep_db_input($_POST['project_id']) . "'");
+            $p_query = $con->run("SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, `is_sprint` FROM project WHERE project_id = ?", array($_POST['project_id']));
             $prow = tep_db_fetch_array($p_query); ?>
             <div class="project-details">
                 <div class="heading">
@@ -53,7 +53,7 @@
                             </tr>
                             <tr>
                                 <th>Team Allocation</th>
-                                <td colspan="3"><?php echo $prow["team_allocation"]; ?></td>
+                                <td colspan="3">-</td>
                             </tr>
                             <tr>
                                 <th>Offshore Team</th>

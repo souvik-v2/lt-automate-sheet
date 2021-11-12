@@ -1,26 +1,20 @@
 <?php
-session_start();
-
-require('includes/db.php');
-// If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loginuser']['loggedin'])) {
-    tep_redirect('index.php');
-}
+require('includes/application_top.php');
 include('includes/header.php');
 
-$p_result = tep_db_query("SELECT project_id, project_name FROM project order by project_id desc");
+$p_result = $con->run("SELECT project_id, project_name FROM project order by project_id desc");
 $option_list  = '';
 if (tep_db_num_rows($p_result) > 0) {
     while ($p_row = tep_db_fetch_array($p_result)) {
-        $selected = (isset($_GET['action']) && ($_GET['action'] === 'view') &&  ($p_row['project_id'] === $_POST['project_id']) ? 'selected' : '');
+        $selected = (isset($_GET['action']) && ($_GET['action'] == 'view') &&  ($p_row['project_id'] == $_POST['project_id']) ? 'selected' : '');
         $option_list .= '<option value="' . $p_row['project_id'] . '"' . $selected . '>' . $p_row['project_name'] . '</option>';
     }
 }
 
-if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
+if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
     //case: new
     //echo "<pre>"; print_r($_POST);
-    $dev_sql = tep_db_query("SELECT developers FROM project WHERE project_id = '" . tep_db_input($_POST['project_id']) . "'");
+    $dev_sql = $con->run("SELECT developers FROM project WHERE project_id = ?", array($_POST['project_id']));
     $dev_result = tep_db_fetch_array($dev_sql);
     $dev_name_array = explode(', ', $dev_result['developers']);
 
@@ -52,13 +46,13 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
         $tmpName = $_FILES['csv']['tmp_name'];
 
         // check the file is a csv
-        if ($ext === 'csv') {
+        if ($ext == 'csv') {
             if (($handle = fopen($tmpName, 'r')) !== FALSE) {
                 //necessary if a large csv file
                 set_time_limit(0);
                 $in = 0;
                 while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                    if ($in === 0) {
+                    if ($in == 0) {
                         $csv_index[] = $data;
                     }
                     $csv[] = $data;
@@ -106,15 +100,15 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
                     $lt_carryover[] = ((count($sprint_point_array) > 0) && ($sprint_point_array[$k] != '') ? $story_point_array[$k] : 0);
                 }
             }
-            $total_story_count = array_sum($story_point_array);
-            $total_v2_score = array_sum($v2_score);
-            $total_v2_carryover = array_sum($v2_carryover);
-            $total_lt_score = array_sum($lt_score);
-            $total_lt_carryover = array_sum($lt_carryover);
+            $total_story_count = (int) array_sum($story_point_array);
+            $total_v2_score = (int) array_sum($v2_score);
+            $total_v2_carryover = (int) array_sum($v2_carryover);
+            $total_lt_score = (int) array_sum($lt_score);
+            $total_lt_carryover = (int) array_sum($lt_carryover);
             $actual_delivered = $total_story_count - ($total_v2_carryover + $total_lt_carryover);
         }
     } else {
-        $_SESSION['error'] = '"File upload error!!';
+        $_SESSION['error'] = 'Sprint file not uploaded!!';
     }
     //rework calculation
     if ($_FILES['csv_rw']['error'] == 0) {
@@ -128,13 +122,13 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
         $tmpName = $_FILES['csv_rw']['tmp_name'];
 
         // check the file is a csv
-        if ($ext === 'csv') {
+        if ($ext == 'csv') {
             if (($handle = fopen($tmpName, 'r')) !== FALSE) {
                 //necessary if a large csv file
                 set_time_limit(0);
                 $in = 0;
                 while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                    if ($in === 0) {
+                    if ($in == 0) {
                         $csv_rw_index[] = $data;
                     }
                     $csv_rw[] = $data;
@@ -174,96 +168,100 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
             $rw_developers_point_array = $rw_story['rw_developers'];
             foreach ($rw_developers_point_array as $k => $v) {
                 if (in_array($v, $dev_name_array)) {
-                    $rw_v2_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
+                    $rw_v2_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k] : 0);
                 } else {
-                    $rw_lt_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k]: 0);
+                    $rw_lt_score[] = (count($rw_sprint_point_array) > 0 && ($rw_sprint_point_array[$k] != '') ? $rw_story_point_array[$k] : 0);
                 }
             }
-            $rework = array_sum($rw_v2_score);
-            $lt_reoponed_sp = array_sum($rw_lt_score);
+            $rework = (int) array_sum($rw_v2_score);
+            $lt_reoponed_sp = (int) array_sum($rw_lt_score);
         }
     } else {
-        $_SESSION['error'] = '"File upload error!!';
+        $_SESSION['error'] = 'Reopen file not uploaded!!';
     }
     //insert
     $sql_data_array = array(
         'project_id' =>  $_POST['project_id'],
         'sprint_name' =>  $_POST['sprint_name'],
-        'planned_story_point' =>  $total_story_count,
-        'actual_delivered' =>  $actual_delivered,
-        'v2_delivered' =>  $total_v2_score,
-        'lt_delivered' =>  $total_lt_score,
-        'rework' =>  $rework,
-        'lt_reoponed_sp' =>  $lt_reoponed_sp,
-        'v2_carryover' =>  $total_v2_carryover,
-        'lt_carryover' =>  $total_lt_carryover,
+        'planned_story_point' => (int) $total_story_count,
+        'actual_delivered' => (int) $actual_delivered,
+        'v2_delivered' => (int) $total_v2_score,
+        'lt_delivered' => (int) $total_lt_score,
+        'rework' => (int) $rework,
+        'lt_reoponed_sp' => (int) $lt_reoponed_sp,
+        'v2_carryover' =>  (int) $total_v2_carryover,
+        'lt_carryover' => (int) $total_lt_carryover,
         'qa_passed' => ($total_v2_score - $rework),
-        'v2_reopen_percentage' =>  round(($rework / $total_v2_score) * 100),
-        'lt_reopen_percentage' =>  round(($lt_reoponed_sp / $total_lt_score) * 100),
-        'v2_carryover_percentage' =>  round(($total_v2_carryover / $total_v2_score) * 100),
-        'lt_carryover_percentage' =>  round(($total_lt_carryover / $total_lt_score) * 100),
-        'planned_vs_completed_ratio' =>  round(($actual_delivered / $total_story_count) * 100),
+        'v2_reopen_percentage' => (int) round(($rework / $total_v2_score) * 100),
+        'lt_reopen_percentage' => (int) round(($lt_reoponed_sp / $total_lt_score) * 100),
+        'v2_carryover_percentage' => (int) round(($total_v2_carryover / $total_v2_score) * 100),
+        'lt_carryover_percentage' => (int) round(($total_lt_carryover / $total_lt_score) * 100),
+        'planned_vs_completed_ratio' => (int) round(($actual_delivered / $total_story_count) * 100),
         'created_date' => 'now()'
     );
     //echo '<pre>'; print_r($sql_data_array); die();
     //
-    tep_db_perform('sprint_data', $sql_data_array);
-    $_SESSION['success'] = "Record created successfully!!!";
+    try {
+        tep_db_perform($con, 'sprint_data', $sql_data_array);
+        $_SESSION['success'] = "Record created successfully!!!";
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
     tep_redirect('sprint_view.php');
 }
 ?>
 <div class="container contact mt-3">
-	<div class="row">
-		<div class="col-md-3">
-			<div class="contact-info">
-				<img src="images/v-2-logo.svg" alt="image"/>
-				<h2>Add Sprint</h2>
-			</div>
-		</div>
-		<div class="col-md-9">
-        <form method="POST" action="sprint.php?action=newsprint" name="automate-sheet" enctype="multipart/form-data">
-			<div class="contact-form">
-				<div class="form-group">
-				  <label class="control-label col-sm-4" for="fname">Project Name:</label>
-				  <div class="col-sm-10">          
-                    <select name="project_id" class="form-control" onchange="getID(this.value)" required>
-                        <option value="" disabled="disabled">Select Project</option>
-                        <?php echo $option_list; ?>
-                    </select>
-				  </div>
-				</div>
-				<div class="form-group">
-				  <label class="control-label col-sm-4" for="lname">Sprint Name:</label>
-				  <div class="col-sm-10">          
-                    <input type="text" class="form-control" placeholder="Sprint Name" name="sprint_name" required>
-				</div>
-				<div class="form-group mt-3">
-				  <label class="control-label col-sm-10" for="file">Upload Planned Story Point:</label>
-				  <div class="col-sm-10">
-                    <input type="file" name="csv" id="file">
-				  </div>
-				</div>
-				<div class="form-group">
-				  <label class="control-label col-sm-10" for="file_rw">Upload Reopen Caculation CSV:</label>
-				  <div class="col-sm-10">
-                    <input type="file" name="csv_rw" id="file_rw">
-				  </div>
-				</div>
-				<div class="form-group">        
-				  <div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn2 btn-default" name="automate">Add Sprint Data</button>
-				  </div>
-				</div>
-			</div>
-        </form>    
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="contact-info">
+                <img src="images/v-2-logo.svg" alt="image" />
+                <h2>Add Sprint</h2>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <form method="POST" action="sprint.php?action=newsprint" name="automate-sheet" enctype="multipart/form-data" onsubmit="return checkSprint(event);">
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="fname">Project Name:</label>
+                        <div class="col-sm-10">
+                            <select name="project_id" id="project_id" class="form-control" onchange="getID(this.value)" required>
+                                <option value="" disabled="disabled">Select Project</option>
+                                <?php echo $option_list; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="sprint_name">Sprint Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="Sprint Name" name="sprint_name" required id="sprint_name">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="control-label col-sm-10" for="file">Upload Planned Story Point:</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="csv" id="file">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-10" for="file_rw">Upload Reopen Caculation CSV:</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="csv_rw" id="file_rw">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn2 btn-default" name="automate">Add Sprint Data</button>
+                            </div>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
 </div>
 <script>
     function getID(pid) {
         $.ajax({
             url: "ajax_required.php",
-            type: "get", //send it through get method
+            type: "get",
             data: {
                 project_id: pid
             },
@@ -271,6 +269,33 @@ if (isset($_GET['action']) && ($_GET['action'] === 'newsprint')) {
                 //Do Something
             }
         });
+    }
+
+    function checkSprint(e) {
+        var testing = false;
+        var sprintName = $("#sprint_name").val();
+        var pid = $("#project_id").val();
+
+        $.ajax({
+            url: "ajax_required.php",
+            type: "get",
+            async: false,
+            data: {
+                sprint_nm: sprintName,
+                pID: pid
+            },
+            success: function(response) {
+                //Do Something
+                //alert(response);
+                if (response == 'found') {
+                    alert("Sprint name already exists.")
+                    testing = false;
+                } else {
+                    testing = true;
+                }
+            }
+        });
+        return testing;
     }
 </script>
 <?php include_once('includes/footer.php'); ?>
