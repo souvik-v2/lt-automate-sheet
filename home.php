@@ -4,7 +4,6 @@ require('includes/application_top.php');
 include('includes/header.php');
 
 $project_id = (isset($_POST['project_id']) ? $_POST['project_id'] : '');
-
 try {
     $p_sql = "SELECT project_id, project_name FROM project order by project_id desc";
     $p_result = $con->run($p_sql);
@@ -30,12 +29,18 @@ if (isset($action, $_POST['project_id']) && ($action == 'view')) {
 
         $result = $con->run($sql . " ORDER BY s.sprint_id DESC", array($project_id));
         //
-        $is_sprint_status = tep_db_fetch_array($p_result);
-        if ($is_sprint_status['is_sprint'] == 1) {
-            $is_sprint_graph_query = $con->run($sql . " ORDER BY s.sprint_id DESC LIMIT 0, 8", array($project_id));
+        if (isset($_POST['sprint_id']) && (count($_POST['sprint_id']) > 0)) {
+            $sprint_id = implode(', ', $_POST['sprint_id']);
+            $is_sprint_graph_query = $con->run($sql . " AND s.sprint_id IN(".$sprint_id.") ORDER BY s.sprint_id ASC", array($project_id));
         } else {
-            $is_sprint_graph_query = $con->run($sql . " ORDER BY s.sprint_id DESC LIMIT 0, 6", array($project_id));
+            $is_sprint_status = tep_db_fetch_array($p_result);
+            if ($is_sprint_status['is_sprint'] == 1) {
+                $is_sprint_graph_query = $con->run($sql . " ORDER BY s.sprint_id ASC LIMIT 0, 8", array($project_id));
+            } else {
+                $is_sprint_graph_query = $con->run($sql . " ORDER BY s.sprint_id ASC LIMIT 0, 6", array($project_id));
+            }
         }
+
         if (tep_db_num_rows($is_sprint_graph_query) > 0) {
             $fetchdata = tep_db_fetch_all($is_sprint_graph_query);
             foreach ($fetchdata as $key => $row) {
@@ -58,14 +63,41 @@ if (isset($action, $_POST['project_id']) && ($action == 'view')) {
 <script src="js/graph.js?v=<?php echo time(); ?>"></script>
 <script type="text/javascript">
     $(document).ready(function() {
+        // $('#project_id').on('change', function() {
+        //     this.form.submit();
+        // });
         $('#project_id').on('change', function() {
-            this.form.submit();
+            var project_id = $("#project_id").val();
+            $.ajax({
+                url: "ajax_required.php?action=sprintcall",
+                type: "get",
+                async: false,
+                data: {
+                    projID: project_id,
+                },
+                success: function(response) {
+                    $(".sprint-box").html(response);
+                },
+            });
         });
         <?php if (isset($json_data)) { ?>
             showGraph(<?php echo $json_data; ?>);
         <?php } ?>
-
-        $('#example').DataTable();
     });
 </script>
+<style>
+    .multiselect-container {
+        width: 100% !important;
+    }
+
+    .filter-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn {
+        margin-top: 0 !important;
+    }
+</style>
 <?php include_once('includes/footer.php'); ?>

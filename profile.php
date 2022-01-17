@@ -1,11 +1,20 @@
 <?php
 require('includes/application_top.php');
 include('includes/header.php');
-try {
-    $stmt = $con->run("SELECT password, email FROM user_accounts WHERE id = ? ORDER BY id DESC", array($_SESSION['loginuser']['id']));
-    $data = tep_db_fetch_array($stmt);
-} catch (Exception $e) {
-    $_SESSION['error'] = $e->getMessage();
+if ($_SESSION['loginuser']['dev'] == 'true') {
+    try {
+        $stmt = $con->run("SELECT dev_password as password FROM developer WHERE developer_id = ?", array($_SESSION['loginuser']['id']));
+        $data = tep_db_fetch_array($stmt);
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
+} else {
+    try {
+        $stmt = $con->run("SELECT password FROM user_accounts WHERE id = ?", array($_SESSION['loginuser']['id']));
+        $data = tep_db_fetch_array($stmt);
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
 }
 ?>
 
@@ -29,11 +38,7 @@ try {
             </tr>
             <tr>
                 <td>Password:</td>
-                <td><?= $data['password'] ?></td>
-            </tr>
-            <tr>
-                <td>Email:</td>
-                <td><?= $data['email'] ?></td>
+                <td><?= '<b>********</b>'; ?></td>
             </tr>
         </table>
     </div>

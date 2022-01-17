@@ -3,21 +3,39 @@ require('includes/application_top.php');
 include('includes/header.php');
 
 if (isset($action) && ($action == 'updatepassword')) {
-    try {
-        $query = "SELECT password FROM user_accounts WHERE password = ? and id = ?";
-        $result = $con->run($query, array(md5($_POST["old_password"]), $_POST['id']));
+    if ($_SESSION['loginuser']['dev'] == 'true') {
+        try {
+            $result = $con->run("SELECT dev_password FROM developer WHERE dev_password = ? AND developer_id = ?", array(md5($_POST["old_password"]), $_POST['id']));
 
-        if (tep_db_num_rows($result) > 0) {
-            $sql = "UPDATE user_accounts SET password = ? WHERE id = ?";
-            $result = $con->run($sql, array(md5($_POST["new_password"]), $_POST['id']));
-            $_SESSION['success'] = "Password updated successfully!!!";
-            tep_redirect('user_management.php');
+            if (tep_db_num_rows($result) > 0) {
+                $sql = "UPDATE developer SET dev_password = ? WHERE developer_id = ?";
+                $result = $con->run($sql, array(md5($_POST["new_password"]), $_POST['id']));
+                $_SESSION['success'] = "Password updated successfully!!!";
+                tep_redirect('user_management.php');
+            }
+            //update
+            $_SESSION['error'] = "Password not matched!!!";
+            tep_redirect('change_password.php?user_id=' . $_POST['id']);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
         }
-        //update
-        $_SESSION['error'] = "Password not matched!!!";
-        tep_redirect('change_password.php?user_id=' . $_POST['id']);
-    } catch (Exception $e) {
-        $_SESSION['error'] = $e->getMessage();
+    } else {
+        try {
+            $query = "SELECT password FROM user_accounts WHERE password = ? AND id = ?";
+            $result = $con->run($query, array(md5($_POST["old_password"]), $_POST['id']));
+
+            if (tep_db_num_rows($result) > 0) {
+                $sql = "UPDATE user_accounts SET password = ? WHERE id = ?";
+                $result = $con->run($sql, array(md5($_POST["new_password"]), $_POST['id']));
+                $_SESSION['success'] = "Password updated successfully!!!";
+                tep_redirect('user_management.php');
+            }
+            //update
+            $_SESSION['error'] = "Password not matched!!!";
+            tep_redirect('change_password.php?user_id=' . $_POST['id']);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
     }
 }
 ?>

@@ -25,11 +25,11 @@ if (isset($action) && ($action == 'newproject')) {
 	//
 	try {
 		tep_db_perform($con, 'project', $sql_data_array);
+		//$last_id = $con->lastInsertId();
 		$_SESSION['success'] = "Project created successfully!!!";
-
 	} catch (Exception $e) {
-        $_SESSION['error'] = $e->getMessage();
-    }
+		$_SESSION['error'] = $e->getMessage();
+	}
 	tep_redirect('project.php');
 }
 
@@ -39,7 +39,14 @@ if (isset($action) && ($action == 'editproject')) {
 	$data = tep_db_fetch_array($uresult);
 }
 if (isset($action) && ($action == 'updateproject')) {
+
+	// $usql = "SELECT `project_id`, `project_name`, `delivery_manager`, `project_manager`, `client_poc`, `client_feedback`, `team_allocation`, `offshore_team_allocated`, `offshore_team_billable`, `onsite_team_allocated`, `onsite_team_billable`, `status_date`, `overall_status`, is_sprint, developers FROM project WHERE project_id = ?";
+	// $uresult = $con->run($usql, array($_POST['project_id']));
+	// $data = tep_db_fetch_array($uresult);
+	//echo '<pre>'; print_r($_POST);die();
 	$developers = implode(', ', $_POST['developers']);
+	//$developers = $data['developers'];
+	//echo($developers);die;
 	$sql_data_array = array(
 		'project_name' =>  $_POST['project_name'],
 		'delivery_manager' =>  $_POST['delivery_manager'],
@@ -58,13 +65,14 @@ if (isset($action) && ($action == 'updateproject')) {
 	try {
 		tep_db_perform($con, 'project', $sql_data_array, 'update', array('project_id', $_POST['project_id']));
 		$_SESSION['success'] = "Project updated successfully!!!";
-
 	} catch (Exception $e) {
-        $_SESSION['error'] = $e->getMessage();
-    }
+		$_SESSION['error'] = $e->getMessage();
+	}
 
 	tep_redirect('project.php');
 }
+$developer_query = $con->run("SELECT developer_id, developer_name, developer_status FROM developer ORDER BY developer_name");
+
 ?>
 <div class="container contact">
 	<?php if (isset($action) && ($action == 'editproject')) { ?>
@@ -147,34 +155,19 @@ if (isset($action) && ($action == 'updateproject')) {
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="comment">Developers:</label>
-							<div class="col-10 controls">
-								<div id="field">
+							<label class="control-label col-sm-6" for="comment">Developers:</label>
+							<div class="col-sm-10">
+								<select name="developers[]" class="form-control select2" multiple="multiple">
 									<?php
-									$devs = explode(', ', $data['developers']);
-									if (count($devs) > 0) {
-									}
+									$dev = explode(', ', $data['developers']);
+									while ($developer = tep_db_fetch_array($developer_query)) {
 									?>
-									<input type="text" class="form-control developers" placeholder="Developers" name="developers[]" id="field1" value="<?php echo $devs[0]; ?>" />
-									<button id="b1" class="btn add-more" type="button">+</button>
-								</div>
-							</div>
-							<div id="fieldList" class="col-8 mt-4">
-								<?php
-								if (count($devs) > 1) {
-									for ($i = 1; $i < count($devs); $i++) {
-										$r = rand(2, 99);
-								?>
-										<div class="rw" id="rmv_<?= $r; ?>">
-											<input type="text" class="form-control developers mt-2" placeholder="Developers" name="developers[]" id="field<?= $r; ?>" value="<?= $devs[$i]; ?>" />
-											<span class="rm" id="d_<?= $r; ?>" onclick="rmInput('<?= $r; ?>')">-</span>
-										</div>
-								<?php
-									}
-								}
-								?>
+										<option value="<?php echo $developer['developer_id']; ?>" <?php echo (in_array($developer['developer_id'], $dev) ? 'selected' : ''); ?> <?php echo ($developer['developer_status'] == 0 ? 'disabled' : ''); ?>><?php echo $developer['developer_name']; ?></option>
+									<?php } ?>
+								</select>
 							</div>
 						</div>
+
 						<div class="form-group">
 							<div class="col-sm-offset-2 col-sm-10">
 								<button type="submit" class="btn btn-default" name="automate">Update Project</button>
@@ -263,14 +256,16 @@ if (isset($action) && ($action == 'updateproject')) {
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-sm-4" for="comment">Developers:</label>
-						<div class="col-10 controls">
-							<div id="field">
-								<input type="text" class="form-control developers" placeholder="Developers" name="developers[]" id="field1" />
-								<button id="b1" class="btn add-more" type="button">+</button>
-							</div>
+						<label class="control-label col-sm-6" for="comment">Board:</label>
+						<div class="col-sm-10">
+						<select name="developers[]" class="form-control select2" multiple="multiple">
+									<?php
+									while ($developer = tep_db_fetch_array($developer_query)) {
+									?>
+										<option value="<?php echo $developer['developer_id']; ?>" <?php echo ($developer['developer_status'] == 0 ? 'disabled' : ''); ?>><?php echo $developer['developer_name']; ?></option>
+									<?php } ?>
+								</select>
 						</div>
-						<div id="fieldList" class="col-8 mt-4"></div>
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
@@ -283,4 +278,19 @@ if (isset($action) && ($action == 'updateproject')) {
 		</div>
 	<?php } ?>
 </div>
+<script src="js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css"/>
+<script type="text/javascript">
+	$('.select2').multiselect({
+		nonSelectedText: 'Select Developer',
+		includeSelectAllOption: false,
+		buttonWidth: '100%',
+		enableFiltering: false
+	});
+</script>
+<style>
+	.multiselect-container {
+        width: 100% !important;
+    }
+</style>
 <?php include_once('includes/footer.php'); ?>

@@ -6,7 +6,8 @@ if (isset($action) && ($action == 'deleteproject')) {
     try {
         $result = $con->run("DELETE FROM project WHERE project_id = ?", array($_GET['project_id']));
         $result_sprint = $con->run("DELETE FROM sprint_data WHERE project_id = ?", array($_GET['project_id']));
-        $_SESSION['success'] = "Project and sprint deleted successfully!!!";
+        $con->run("DELETE FROM sprint_report WHERE project_id = ?", array($_GET['project_id']));
+        $_SESSION['success'] = "Project, sprint, report data deleted successfully!!!";
     } catch (Exception $e) {
         $_SESSION['error'] = $e->getMessage();
     }

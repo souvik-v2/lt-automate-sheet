@@ -37,6 +37,10 @@ class DB
     public function quote($value) {
         return $this->pdo->quote($value);
     }
+
+    public function lastInsertId(){
+        return $this->pdo->lastInsertId();
+    }
 }
 //
 $db_name = "lt-automate-sheet";

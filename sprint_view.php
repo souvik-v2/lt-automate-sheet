@@ -47,6 +47,7 @@ if (isset($action, $_POST['project_id']) && ($action == 'view')) {
 if (isset($action) && ($action == 'deletesprint')) {
     $sql = "DELETE FROM sprint_data WHERE sprint_id = ?";
     $con->run($sql, array($_GET['sprint_id']));
+    $con->run("DELETE FROM sprint_report WHERE sprint_id = ?", array($_GET['sprint_id']));
     $_SESSION['success'] = "Record deleted successfully!!!";
     tep_redirect('sprint_view.php');
 }

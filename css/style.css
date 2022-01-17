@@ -101,7 +101,7 @@ form {
 
 .chart {
   margin: 40px auto;
-  border: 1px solid #f7eded;
+  border: 1px solid #ced4da;
 }
 
 #chart-container-1 {
@@ -131,7 +131,7 @@ form {
 }
 
 .heading {
-  border-bottom: 2px solid #adada3;
+  border-bottom: 1px solid #ced4da;
   width: 100%;
   text-align: center;
   padding-bottom: 5px;
@@ -219,6 +219,11 @@ nav a.navbar-brand {
   margin: 0 5px;
 }
 
+#b2 {
+  margin: 0 5px;
+}
+
+
 .rw {
   display: flex;
   justify-content: space-between;
@@ -226,7 +231,10 @@ nav a.navbar-brand {
 
 span.rm {
   font-size: 30px;
-  color: red;
+  color: #ff0000;
   margin-left: 8px;
   cursor: pointer;
+}
+i.fa.fa-ban {
+  color: #ff0000;
 }

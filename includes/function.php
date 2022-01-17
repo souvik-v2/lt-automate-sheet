@@ -158,3 +158,12 @@ function tep_db_perform($con, $table, $data = array(), $action = 'insert', $para
   }
   $con->run($query, $myarr);
 }
+
+function searchForId($id, $array) {
+  foreach ($array as $key => $val) {
+      if ($val[$id] == $id) {
+          return $key;
+      }
+  }
+  return null;
+}

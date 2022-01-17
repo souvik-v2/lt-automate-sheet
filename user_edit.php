@@ -55,6 +55,7 @@ $row = tep_db_fetch_array($result);
                             <select name="role" class="form-control">
                                 <option value="0" <?php if ($row['role'] == 0) echo 'selected="selected"'; ?>>User</option>
                                 <option value="1" <?php if ($row['role'] == 1) echo 'selected="selected"'; ?>>Admin</option>
+                                <option value="1" <?php if ($row['role'] == 2) echo 'selected="selected"'; ?>>Developer</option>
                             </select>
                         </div>
                     </div>

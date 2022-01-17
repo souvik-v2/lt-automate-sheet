@@ -1,29 +1,40 @@
 <?php
-	$page = basename($_SERVER['PHP_SELF']);
-	$page_arr = ['home', 'user', 'project', 'sprint', 'profile'];
-	$home = $user = $project = $sprint = $profile = '';
-	foreach($page_arr as $p) {
-		if(strpos($page, $p) !== false){
-			$$p = 'active';
-		} 
+$page = basename($_SERVER['PHP_SELF']);
+$page_arr = ['home', 'user', 'project', 'sprint', 'profile', 'Developer'];
+$home = $user = $project = $sprint = $profile = $developer = $report = '';
+foreach ($page_arr as $p) {
+	if (strpos($page, $p) !== false) {
+		$$p = 'active';
 	}
-	switch ($page) {
-		case 'home.php':
-			$home = 'active';
-			break;
-		case 'user_management.php':
-			$user = 'active';
-			break;
-		case 'project.php':
-			$project = 'active';
-			break;
-		case 'sprint_view.php':
-			$sprint = 'active';
-			break;
-		case 'profile.php':
-			$profile = 'active';
-			break;
-	};
+}
+switch ($page) {
+	case 'home.php':
+		$home = 'active';
+		break;
+	case 'developer_home.php':
+		$home = 'active';
+		break;
+	case 'user_management.php':
+		$user = 'active';
+		break;
+	case 'project.php':
+		$project = 'active';
+		break;
+	case 'sprint_view.php':
+		$sprint = 'active';
+		break;
+	case 'profile.php':
+		$profile = 'active';
+		break;
+	case 'developer.php':
+		$developer = 'active';
+		break;
+	case 'report.php':
+		$report = 'active';
+		break;
+};
+$home_page = ($_SESSION['loginuser']['dev'] == false ? 'home.php' : 'developer_home.php');
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -57,24 +68,32 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNavDropdown">
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item <?=$home;?>">
-					<a class="nav-link" href="home.php">Home</a>
+				<li class="nav-item <?= $home; ?>">
+					<a class="nav-link" href="<?=$home_page;?>">Home</a>
 				</li>
-				<?php if ($_SESSION['loginuser']['role'] === 'admin') { ?>
-					<li class="nav-item <?=$user;?>">
-						<a class="nav-link" href="user_management.php">User</a>
+				<?php if ($_SESSION['loginuser']['dev'] == false || ($_SESSION['loginuser']['role'] === 'admin')) { ?>
+					<?php if ($_SESSION['loginuser']['role'] === 'admin') { ?>
+						<li class="nav-item <?= $user; ?>">
+							<a class="nav-link" href="user_management.php">User</a>
+						</li>
+						<li class="nav-item <?= $report; ?>">
+							<a class="nav-link" href="report.php">Report</a>
+						</li>
+					<?php } ?>
+					<li class="nav-item <?= $project; ?>">
+						<a class="nav-link" href="project.php">Project</a>
+					</li>
+					<li class="nav-item <?= $sprint; ?>">
+						<a class="nav-link" href="sprint_view.php">Sprint</a>
+					</li>
+					<li class="nav-item <?= $developer; ?>">
+						<a class="nav-link" href="developer.php">Developer</a>
 					</li>
 				<?php } ?>
-				<li class="nav-item <?=$project;?>">
-					<a class="nav-link" href="project.php">Project</a>
-				</li>
-				<li class="nav-item <?=$sprint;?>">
-					<a class="nav-link" href="sprint_view.php">Sprint</a>
-				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="logout.php">Logout</a>
 				</li>
-				<li class="nav-item <?=$profile;?>">
+				<li class="nav-item <?= $profile; ?>">
 					<a class="nav-link" href="profile.php">Howdy, <?= ucfirst($_SESSION['loginuser']['name']); ?></a>
 				</li>
 			</ul>
@@ -88,9 +107,9 @@
 		<div class='alert alert-danger'> <?php echo $_SESSION['error']; ?> <button onclick="this.parentNode.style.display = 'none';">X</button></div>
 	<?php } ?>
 	<script>
-	$(document).ready(function() {
-		setTimeout(function() {
-			<?php unset($_SESSION['error'], $_SESSION['success']); ?>;
-		}, 5000);
-	});
+		$(document).ready(function() {
+			setTimeout(function() {
+				<?php unset($_SESSION['error'], $_SESSION['success']); ?>;
+			}, 5000);
+		});
 	</script>
