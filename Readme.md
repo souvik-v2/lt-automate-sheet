@@ -38,4 +38,5 @@
 # Developer can view own sprint ticket status.
 # Developer can comment on completed/reopen/carryover Ticket Number in a Sprint
 # Sprint Report section with Project name, Project sprint name, Project developer name filter option
-
+# User can select sprints and plot graphs for selected sprints.
+# Canban board functionality for sprint sheet upload added.

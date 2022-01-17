@@ -106,6 +106,8 @@ if (isset($action) && ($action == 'comment')) {
             </div>
         </div>
     <?php
+    } else {
+        echo '<p>No data to display</p>';
     }
     ?>
 </div>

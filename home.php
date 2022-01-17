@@ -29,9 +29,18 @@ if (isset($action, $_POST['project_id']) && ($action == 'view')) {
 
         $result = $con->run($sql . " ORDER BY s.sprint_id DESC", array($project_id));
         //
+        if(isset($_POST['sprint_id'])) {
+            $result = $con->run("SELECT sprint_id, sprint_name FROM sprint_data WHERE project_id = ? ORDER BY sprint_id DESC", array($project_id));
+            $sprint_option_list = '';
+            $checked = (count($_POST['sprint_id']) > 0 ? 'selected' : '');
+            while ($row = tep_db_fetch_array($result)) {
+                $sprint_option_list .= '<option value="' . $row['sprint_id'] . '"'. (in_array($row['sprint_id'], $_POST['sprint_id']) ? 'selected' : '') . '>' . $row['sprint_name'] . '</option>';
+            }
+        }
+        //
         if (isset($_POST['sprint_id']) && (count($_POST['sprint_id']) > 0)) {
             $sprint_id = implode(', ', $_POST['sprint_id']);
-            $is_sprint_graph_query = $con->run($sql . " AND s.sprint_id IN(".$sprint_id.") ORDER BY s.sprint_id ASC", array($project_id));
+            $is_sprint_graph_query = $con->run($sql . " AND s.sprint_id IN(".$sprint_id.")", array($project_id));
         } else {
             $is_sprint_status = tep_db_fetch_array($p_result);
             if ($is_sprint_status['is_sprint'] == 1) {

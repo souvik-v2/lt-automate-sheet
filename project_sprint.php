@@ -8,8 +8,15 @@
                 </select>
             </div>
             <div class="col-6 sprint-box">
+                <?php if (isset($_POST['default'])) { ?>
+                    <select name="sprint_id[]" class="form-control select2" id="sprints" multiple="multiple">
+                        <?php echo $sprint_option_list; ?>
+                    </select>
+                    <span>OR</span>
+                <?php } ?>
             </div>
             <div class="col-2 text-right">
+                <input type="hidden" name="default" value="1">
                 <button type="submit" class="btn">Show Graph</button>
             </div>
         </div>
@@ -143,3 +150,13 @@ if (isset($action, $_POST['project_id']) && ($action == 'view')) {
     }
 }
 ?>
+<script src="js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" />
+<script>
+    $('.select2').multiselect({
+        nonSelectedText: 'Choose sprints to show in the graph',
+        includeSelectAllOption: false,
+        buttonWidth: '100%',
+        enableFiltering: false
+    });
+</script>
