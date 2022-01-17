@@ -14,5 +14,7 @@ if (!isset($_SESSION['loginuser']['loggedin']) && ('index.php' !== basename($_SE
 //LT developer redirect
 //set action variable
 $action = (isset($_GET['action']) && !empty($_GET['action']) ? $_GET['action'] : '');
-
+//
+//error_reporting(E_ALL);
+ini_set("display_errors", 0);
 ?>

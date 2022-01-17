@@ -3,7 +3,7 @@ require('includes/application_top.php');
 include('includes/header.php');
 
 
-$result = $con->run("SELECT `sprint_id`, `project_id`, `sprint_name`, `planned_story_point`, `actual_delivered`, `v2_delivered`, `lt_delivered`, `rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, `lt_reopen_percentage`, `v2_carryover_percentage`, `lt_carryover_percentage`, `planned_vs_completed_ratio` FROM sprint_data WHERE sprint_id = ?", array($_GET['sprint_id']));
+$result = $con->run("SELECT `sprint_id`, `project_id`, `sprint_name`, `planned_story_point`, `actual_delivered`, `v2_delivered`, `lt_delivered`, `rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, `lt_reopen_percentage`, `v2_carryover_percentage`, `lt_carryover_percentage`, `planned_vs_completed_ratio`, sprint_goal FROM sprint_data WHERE sprint_id = ?", array($_GET['sprint_id']));
 
 $row = tep_db_fetch_array($result);
 //
@@ -19,8 +19,9 @@ if (tep_db_num_rows($p_result) > 0) {
 if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
     //case: new
     //echo "<pre>"; print_r($_POST);
-    $dev_sql = $con->run("SELECT developers FROM project WHERE project_id = ?", array($_POST['project_id']));
+    $dev_sql = $con->run("SELECT developers, is_sprint FROM project WHERE project_id = ?", array($_POST['project_id']));
     $dev_result = tep_db_fetch_array($dev_sql);
+    $is_sprint = $dev_result['is_sprint'];
     //v2.0
     $dev_query = $con->run("SELECT developer_name FROM `developer` WHERE developer_id IN (" . $dev_result['developers'] . ")");
     $dev_name_string = '';
@@ -55,8 +56,8 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
 
     if (!file_exists($_FILES['csv']['tmp_name']) || !is_uploaded_file($_FILES['csv']['tmp_name'])) {
         $total_story_count = $row['planned_story_point'];
-        $total_v2_score = $row['v2_delivered'];
-        $total_lt_score = $row['lt_delivered'];
+        $total_v2_score = $v2_delivered = $row['v2_delivered'];
+        $total_lt_score = $lt_delivered = $row['lt_delivered'];
         $total_v2_carryover = $row['v2_carryover'];
         $total_lt_carryover = $row['lt_carryover'];
         $actual_delivered = $row['actual_delivered'];
@@ -115,6 +116,12 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
                 }
                 if (strpos($csv[0][$i], 'Assignee') !== false) {
                     $dev_key = $i;
+                }
+                if ($is_sprint == 1) {
+                    //For canban board there are no sprint column in csv.
+                    if ((strpos($csv[0][$i], 'Issue key') !== false)) {
+                        $sprint_key[] = $i;
+                    }
                 }
             }
             $story = array();
@@ -177,7 +184,8 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
             foreach ($developers_point_array as $k => $v) {
                 if ($v == "")
                     continue;
-                if (in_array($v, $dev_name_array) && ($story_point_array[$k] != '')) {
+
+                if (in_array($v, $dev_name_array)) {
                     $ik = $issue_key_array[$k];
                     $developer_name_array[$v][$ik]['total'] = (int) $story_point_array[$k]; //v2.0
                     $v2_score[] = $story_point_array[$k];
@@ -332,8 +340,14 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
                 if (strpos($csv_rw[0][$i], 'Assignee') !== false) {
                     $rw_dev_key = $i;
                 }
-                if (strpos($csv[0][$i], 'Issue key') !== false) {
+                if (strpos($csv_rw[0][$i], 'Issue key') !== false) {
                     $rw_issue_key = $i;
+                }
+                if ($is_sprint == 1) {
+                    //For canban board there are no sprint column in csv.
+                    if ((strpos($csv_rw[0][$i], 'Issue key') !== false)) {
+                        $rw_sprint_key[] = $i;
+                    }
                 }
             }
             $rw_story = array();
@@ -404,6 +418,11 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
     } else {
         $_SESSION['error'] = 'Reopen file not uploaded!!';
     }
+    //
+    if($is_sprint == 1) {
+        $total_v2_carryover = 0;
+        $total_lt_carryover = 0;
+    }
     //update
     $sql_data_array = array(
         'project_id' =>  $_POST['project_id'],
@@ -426,7 +445,8 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
         'lt_reopen_percentage' =>  (int) round(($lt_reoponed_sp / $total_lt_score) * 100),
         'v2_carryover_percentage' =>  (int) round(($total_v2_carryover / $total_v2_score) * 100),
         'lt_carryover_percentage' =>  (int) round(($total_lt_carryover / $total_lt_score) * 100),
-        'planned_vs_completed_ratio' =>  (int) round(($actual_delivered / $total_story_count) * 100)
+        'planned_vs_completed_ratio' =>  (int) round(($actual_delivered / $total_story_count) * 100),
+        'sprint_goal' =>  $_POST['sprint_goal']
     );
     //echo '<pre>'; print_r($sql_data_array); die();
     //
@@ -455,7 +475,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
                         if ($reopen_storypoint > 0) {
                             $reopen_storypoint = 1;
                             $completed_storypoint = $carryover_storypoint = 0;
-                        } else if ($carryover_storypoint > 0) {
+                        } else if ($carryover_storypoint > 0 && $is_sprint == 0) {
                             $carryover_storypoint = 1;
                             $completed_storypoint = $reopen_storypoint = 0;
                         } else {
@@ -511,6 +531,12 @@ if (isset($_GET['action']) && ($_GET['action'] == 'updatesprint')) {
                         <label class="control-label col-sm-4" for="lname">Sprint Name:</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" placeholder="Sprint Name" name="sprint_name" value="<?php echo $row['sprint_name']; ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="sprint_goal">Sprint Goal:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="Sprint Goal" name="sprint_goal" value="<?php echo $row['sprint_goal']; ?>">
                         </div>
                     </div>
                     <div class="form-group">

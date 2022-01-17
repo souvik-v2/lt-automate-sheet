@@ -99,5 +99,12 @@ if (isset($action, $_POST['project_id']) && ($action == 'view')) {
     .btn {
         margin-top: 0 !important;
     }
+    .col-6.sprint-box {
+    display: flex;
+    align-items: center;
+}
+.col-6.sprint-box span {
+    margin: 0 0 10px 30px;
+}
 </style>
 <?php include_once('includes/footer.php'); ?>

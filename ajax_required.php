@@ -58,6 +58,7 @@ if (isset($_GET['action'], $_GET['projID']) && !empty($_GET['projID']) && ($_GET
         <select name="sprint_id[]" class="form-control select2" id="sprints" multiple="multiple">
             <?php echo $option_list; ?>
         </select>
+        <span>OR</span>
         <script src="js/bootstrap-multiselect.js"></script>
         <link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" />
         <script>

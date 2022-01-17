@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 17, 2022 at 05:43 AM
+-- Generation Time: Jan 17, 2022 at 12:19 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.3.29
 
@@ -114,26 +114,28 @@ CREATE TABLE `sprint_data` (
   `v2_carryover_percentage` int(100) NOT NULL,
   `lt_carryover_percentage` int(100) NOT NULL,
   `planned_vs_completed_ratio` int(11) NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT current_timestamp()
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `sprint_goal` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `sprint_data`
 --
 
-INSERT INTO `sprint_data` (`sprint_id`, `project_id`, `sprint_name`, `planned_story_point`, `actual_delivered`, `v2_delivered`, `lt_delivered`, `rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, `lt_reopen_percentage`, `v2_carryover_percentage`, `lt_carryover_percentage`, `planned_vs_completed_ratio`, `created_date`) VALUES
-(3, 2, '2021: LCW 9/23 - 10/7', 13, 2, 10, 3, 5, 0, 8, 3, 5, 50, 0, 80, 100, 15, '2021-10-27 15:28:59'),
-(4, 2, '2021: LCW 9/9 - 9/23', 39, 8, 33, 6, 0, 3, 28, 3, 33, 0, 50, 85, 50, 21, '2021-10-27 15:31:37'),
-(5, 2, '2021: LCW 9/9 - 9/23', 39, 8, 33, 6, 0, 0, 28, 3, 33, 0, 0, 85, 50, 21, '2021-10-29 03:44:36'),
-(6, 2, '2021: LCW 9/9 - 9/23', 39, 8, 33, 6, 0, 3, 28, 3, 33, 0, 50, 85, 50, 21, '2021-10-29 03:58:02'),
-(12, 6, '10.1: CAN 10.12-10.26', 88, 88, 19, 69, 3, 11, 0, 0, 16, 16, 16, 0, 0, 100, '2021-11-15 06:32:09'),
-(15, 6, '9.2: CAN 9.28-10.12', 66, 66, 19, 47, 5, 12, 0, 0, 14, 26, 26, 0, 0, 100, '2021-11-15 06:48:06'),
-(16, 2, '2021: LCW 10/7 -10/21', 55, 25, 34, 21, 3, 0, 15, 15, 31, 9, 0, 44, 71, 45, '2021-11-15 07:11:47'),
-(17, 5, '2021: SC 10.1 (10.5 - 10.19)', 40, 21, 12, 28, 0, 2, 0, 19, 12, 0, 7, 0, 68, 53, '2021-11-15 09:35:56'),
-(19, 5, '2021: SC 10.2 (10.19 - 11.2)', 38, 32, 15, 23, 2, 3, 0, 6, 13, 13, 13, 0, 26, 84, '2021-11-17 16:06:15'),
-(57, 5, '2021: SC 11.1 (11.2 - 11.16)', 36, 17, 5, 12, 3, 8, 3, 8, 5, 38, 35, 38, 35, 47, '2022-01-13 11:44:35'),
-(58, 6, 'CAN Sprint 11.2: 11.23-12.7', 68, 50, 12, 38, 3, 11, 3, 15, 12, 20, 21, 20, 28, 74, '2022-01-17 10:05:39'),
-(59, 6, '12.1: CAN 12.7-12.21', 50, 47, 13, 34, 8, 13, 0, 9, 13, 62, 35, 0, 24, 94, '2022-01-17 10:07:01');
+INSERT INTO `sprint_data` (`sprint_id`, `project_id`, `sprint_name`, `planned_story_point`, `actual_delivered`, `v2_delivered`, `lt_delivered`, `rework`, `lt_reoponed_sp`, `v2_carryover`, `lt_carryover`, `qa_passed`, `v2_reopen_percentage`, `lt_reopen_percentage`, `v2_carryover_percentage`, `lt_carryover_percentage`, `planned_vs_completed_ratio`, `created_date`, `sprint_goal`) VALUES
+(3, 2, '2021: LCW 9/23 - 10/7', 13, 2, 10, 3, 5, 0, 8, 3, 5, 50, 0, 80, 100, 15, '2021-10-27 15:28:59', ''),
+(4, 2, '2021: LCW 9/9 - 9/23', 39, 8, 33, 6, 0, 3, 28, 3, 33, 0, 50, 85, 50, 21, '2021-10-27 15:31:37', ''),
+(5, 2, '2021: LCW 9/9 - 9/23', 39, 8, 33, 6, 0, 0, 28, 3, 33, 0, 0, 85, 50, 21, '2021-10-29 03:44:36', ''),
+(6, 2, '2021: LCW 9/9 - 9/23', 39, 8, 33, 6, 0, 3, 28, 3, 33, 0, 50, 85, 50, 21, '2021-10-29 03:58:02', ''),
+(12, 6, '10.1: CAN 10.12-10.26', 88, 88, 19, 69, 3, 11, 0, 0, 16, 16, 16, 0, 0, 100, '2021-11-15 06:32:09', ''),
+(15, 6, '9.2: CAN 9.28-10.12', 66, 66, 19, 47, 5, 12, 0, 0, 14, 26, 26, 0, 0, 100, '2021-11-15 06:48:06', ''),
+(16, 2, '2021: LCW 10/7 -10/21', 55, 25, 34, 21, 3, 0, 15, 15, 31, 9, 0, 44, 71, 45, '2021-11-15 07:11:47', ''),
+(17, 5, '2021: SC 10.1 (10.5 - 10.19)', 40, 21, 12, 28, 0, 2, 0, 19, 12, 0, 7, 0, 68, 53, '2021-11-15 09:35:56', ''),
+(19, 5, '2021: SC 10.2 (10.19 - 11.2)', 38, 32, 15, 23, 2, 3, 0, 6, 13, 13, 13, 0, 26, 84, '2021-11-17 16:06:15', ''),
+(58, 6, 'CAN Sprint 11.2: 11.23-12.7', 68, 50, 12, 38, 3, 11, 3, 15, 12, 20, 21, 20, 28, 74, '2022-01-17 10:05:39', ''),
+(59, 6, '12.1: CAN 12.7-12.21', 50, 47, 13, 34, 8, 13, 0, 9, 13, 62, 35, 0, 24, 94, '2022-01-17 10:07:01', ''),
+(71, 5, '2021: SC 11.1 (11.2 - 11.16)', 36, 17, 5, 12, 3, 8, 3, 8, 5, 38, 35, 38, 35, 47, '2022-01-17 16:23:10', ''),
+(73, 1, '2021: Dec', 32, 32, 30, 2, 0, 0, 0, 0, 30, 0, 0, 0, 0, 100, '2022-01-17 16:46:14', '');
 
 -- --------------------------------------------------------
 
@@ -159,9 +161,6 @@ CREATE TABLE `sprint_report` (
 --
 
 INSERT INTO `sprint_report` (`sprint_report_id`, `project_id`, `sprint_id`, `developer_id`, `issue_key`, `total_storypoint`, `completed_storypoint`, `carryover_storypoint`, `reopen_storypoint`, `developer_comments`) VALUES
-(82, 5, 57, 13, 'SNAP-3414', 2, 1, 0, 0, ''),
-(83, 5, 57, 13, 'SNAP-3412', 3, 0, 0, 1, ''),
-(84, 5, 57, 13, 'SNAP-3405', 3, 0, 1, 0, ''),
 (85, 6, 58, 12, 'CAN-3166', 2, 1, 0, 0, ''),
 (86, 6, 58, 12, 'CAN-3118', 3, 1, 0, 0, ''),
 (87, 6, 58, 12, 'CAN-2943', 3, 1, 0, 0, ''),
@@ -174,7 +173,26 @@ INSERT INTO `sprint_report` (`sprint_report_id`, `project_id`, `sprint_id`, `dev
 (94, 6, 59, 12, 'CAN-3177', 2, 1, 0, 0, ''),
 (95, 6, 59, 12, 'CAN-3168', 3, 1, 0, 0, ''),
 (96, 6, 59, 12, 'CAN-3167', 2, 0, 0, 1, ''),
-(97, 6, 59, 12, 'CAN-3066', 3, 0, 0, 1, '');
+(97, 6, 59, 12, 'CAN-3066', 3, 0, 0, 1, ''),
+(258, 5, 71, 14, 'SNAP-3426', 0, 1, 0, 0, ''),
+(259, 5, 71, 13, 'SNAP-3414', 2, 1, 0, 0, ''),
+(260, 5, 71, 13, 'SNAP-3412', 3, 0, 0, 1, ''),
+(261, 5, 71, 13, 'SNAP-3405', 3, 0, 1, 0, ''),
+(277, 1, 73, 8, 'DWA-1935', 2, 1, 0, 0, ''),
+(278, 1, 73, 8, 'DWA-1928', 2, 1, 0, 0, ''),
+(279, 1, 73, 8, 'DWA-1927', 2, 1, 0, 0, ''),
+(280, 1, 73, 8, 'DWA-1920', 3, 1, 0, 0, ''),
+(281, 1, 73, 8, 'DWA-1919', 3, 1, 0, 0, ''),
+(282, 1, 73, 8, 'DWA-1915', 2, 1, 0, 0, ''),
+(283, 1, 73, 8, 'DWA-1904', 3, 1, 0, 0, ''),
+(284, 1, 73, 9, 'DWA-1922', 1, 1, 0, 0, ''),
+(285, 1, 73, 9, 'DWA-1921', 1, 1, 0, 0, ''),
+(286, 1, 73, 9, 'DWA-1918', 2, 1, 0, 0, ''),
+(287, 1, 73, 9, 'DWA-1917', 2, 1, 0, 0, ''),
+(288, 1, 73, 9, 'DWA-1913', 1, 1, 0, 0, ''),
+(289, 1, 73, 9, 'DWA-1907', 1, 1, 0, 0, ''),
+(290, 1, 73, 9, 'DWA-1903', 2, 1, 0, 0, ''),
+(291, 1, 73, 9, 'DWA-1897', 3, 1, 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -199,8 +217,7 @@ INSERT INTO `user_accounts` (`id`, `username`, `password`, `email`, `role`, `sta
 (1, 'test', '098f6bcd4621d373cade4e832627b4f6', 'test@test.com', 0, 1),
 (2, 'admin', 'e6e061838856bf47e1de730719fb2609', 'admin@v2.com', 1, 1),
 (3, 'souvik', '6e339344b1894b0ca8eec4a4014a39b4', 'souvik.patra@v2solutions.com', 0, 1),
-(4, 'jayant.d@v2solutions.com', '4254c0e62628b4498e5b218d01d61a03', 'jayant.d@v2solutions.com', 0, 1),
-(5, 'developer', '5e8edd851d2fdfbd7415232c67367cc3', 'dev@v2.com', 2, 1);
+(4, 'jayant.d@v2solutions.com', '4254c0e62628b4498e5b218d01d61a03', 'jayant.d@v2solutions.com', 0, 1);
 
 --
 -- Indexes for dumped tables
@@ -258,13 +275,13 @@ ALTER TABLE `project`
 -- AUTO_INCREMENT for table `sprint_data`
 --
 ALTER TABLE `sprint_data`
-  MODIFY `sprint_id` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `sprint_id` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `sprint_report`
 --
 ALTER TABLE `sprint_report`
-  MODIFY `sprint_report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `sprint_report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=292;
 
 --
 -- AUTO_INCREMENT for table `user_accounts`

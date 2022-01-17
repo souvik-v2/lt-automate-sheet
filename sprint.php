@@ -14,8 +14,9 @@ if (tep_db_num_rows($p_result) > 0) {
 if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
     //case: new
     //echo "<pre>"; print_r($_POST);
-    $dev_sql = $con->run("SELECT developers FROM project WHERE project_id = ?", array($_POST['project_id']));
+    $dev_sql = $con->run("SELECT developers, is_sprint FROM project WHERE project_id = ?", array($_POST['project_id']));
     $dev_result = tep_db_fetch_array($dev_sql);
+    $is_sprint = $dev_result['is_sprint'];
     //v2.0
     $dev_query = $con->run("SELECT developer_name FROM `developer` WHERE developer_id IN (" . $dev_result['developers'] . ")");
     $dev_name_string = '';
@@ -83,6 +84,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
         //echo count($csv);die;
         $point_key = $status_key = $dev_key = 0;
         if (count($csv) > 0) {
+            $dwa = count($csv[0]) - 1;
             for ($i = 0; $i < count($csv[0]); $i++) {
                 if (strpos($csv[0][$i], 'Issue key') !== false) {
                     $issue_key = $i;
@@ -93,12 +95,18 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
                 if (strpos($csv[0][$i], 'Status') !== false) {
                     $status_key = $i;
                 }
-                if (strpos($csv[0][$i], 'Sprint') !== false) {
+                if ((strpos($csv[0][$i], 'Sprint') !== false)) {
                     $sprint_key[] = $i;
-                    //echo count($sprint_key);die;
+                    //echo count($sprint_key);die; Summary
                 }
                 if (strpos($csv[0][$i], 'Assignee') !== false) {
                     $dev_key = $i;
+                }
+                if ($is_sprint == 1) {
+                    //For canban board there are no sprint column in csv.
+                    if ((strpos($csv[0][$i], 'Issue key') !== false)) {
+                        $sprint_key[] = $i;
+                    }
                 }
             }
             $story = array();
@@ -147,7 +155,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
             foreach ($developers_point_array as $k => $v) {
                 if ($v == "")
                     continue;
-                if (in_array($v, $dev_name_array) && ($story_point_array[$k] != '')) {
+                if (in_array($v, $dev_name_array)) {
                     $ik = $issue_key_array[$k];
                     //$developer_name_array[$v][$k]['issue'] = $issue_key_array[$k]; //v2.0
                     $developer_name_array[$v][$ik]['total'] = (int) $story_point_array[$k]; //v2.0
@@ -316,8 +324,14 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
                 if (strpos($csv_rw[0][$i], 'Assignee') !== false) {
                     $rw_dev_key = $i;
                 }
-                if (strpos($csv[0][$i], 'Issue key') !== false) {
+                if (strpos($csv_rw[0][$i], 'Issue key') !== false) {
                     $rw_issue_key = $i;
+                }
+                if ($is_sprint == 1) {
+                    //For canban board there are no sprint column in csv.
+                    if ((strpos($csv_rw[0][$i], 'Issue key') !== false)) {
+                        $rw_sprint_key[] = $i;
+                    }
                 }
             }
             $rw_story = array();
@@ -370,6 +384,12 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
     } else {
         $_SESSION['error'] = 'Reopen file not uploaded!!';
     }
+    //
+    if($is_sprint == 1) {
+        $total_v2_carryover = 0;
+        $total_lt_carryover = 0;
+    }
+    //
     //insert
     $sql_data_array = array(
         'project_id' =>  $_POST['project_id'],
@@ -393,7 +413,8 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
         'v2_carryover_percentage' => (int) round(($total_v2_carryover / $total_v2_score) * 100),
         'lt_carryover_percentage' => (int) round(($total_lt_carryover / $total_lt_score) * 100),
         'planned_vs_completed_ratio' => (int) round(($actual_delivered / $total_story_count) * 100),
-        'created_date' => 'now()'
+        'created_date' => 'now()',
+        'sprint_goal' =>  $_POST['sprint_goal']
     );
     //echo '<pre>'; print_r($developer_name_array); die();
     //
@@ -418,7 +439,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
                 if ($reopen_storypoint > 0) {
                     $reopen_storypoint = 1;
                     $completed_storypoint = $carryover_storypoint = 0;
-                } else if ($carryover_storypoint > 0) {
+                } else if ($carryover_storypoint > 0 && $is_sprint == 0) {
                     $carryover_storypoint = 1;
                     $completed_storypoint = $reopen_storypoint = 0;
                 } else {
@@ -473,24 +494,31 @@ if (isset($_GET['action']) && ($_GET['action'] == 'newsprint')) {
                         <div class="col-sm-10">
                             <input type="text" class="form-control" placeholder="Sprint Name" name="sprint_name" required id="sprint_name">
                         </div>
-                        <div class="form-group mt-3">
-                            <label class="control-label col-sm-10" for="file">Upload Planned Story Point:</label>
-                            <div class="col-sm-10">
-                                <input type="file" name="csv" id="file">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-10" for="file_rw">Upload Reopen Caculation CSV:</label>
-                            <div class="col-sm-10">
-                                <input type="file" name="csv_rw" id="file_rw">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn2 btn-default" name="automate">Add Sprint Data</button>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="sprint_name">Sprint Goal:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="Sprint Goal" name="sprint_goal" id="sprint_goal">
                         </div>
                     </div>
+                    <div class="form-group mt-3">
+                        <label class="control-label col-sm-10" for="file">Upload Planned Story Point:</label>
+                        <div class="col-sm-10">
+                            <input type="file" name="csv" id="file">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-10" for="file_rw">Upload Reopen Caculation CSV:</label>
+                        <div class="col-sm-10">
+                            <input type="file" name="csv_rw" id="file_rw">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn2 btn-default" name="automate">Add Sprint Data</button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

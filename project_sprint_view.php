@@ -47,6 +47,7 @@
                                 <th scope="col">V2 Carryover</th>
                                 <th scope="col">LT Carryover</th>
                                 <th scope="col">QA Passed</th>
+                                <th scope="col">Sprint Goal</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -68,6 +69,7 @@
                                     <td><?php echo $row["v2_carryover"]; ?></td>
                                     <td><?php echo $row["lt_carryover"]; ?></td>
                                     <td><?php echo $row["qa_passed"]; ?></td>
+                                    <td><?php echo $row["sprint_goal"]; ?></td>
                                     <td><a href="sprint_edit.php?action=editsprint&project_id=<?php echo $row['project_id']; ?>&sprint_id=<?php echo $row['sprint_id']; ?>"><i class="far fa-edit"></i></a> |
                                         <a onclick='deleteConfirmSprint("<?php echo $row['sprint_id']; ?>")' href="javascript:void(0)"><i class="far fa-trash-alt"></i></a>
                                     </td>
