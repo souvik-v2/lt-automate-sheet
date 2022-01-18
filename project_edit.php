@@ -71,7 +71,7 @@ if (isset($action) && ($action == 'updateproject')) {
 
 	tep_redirect('project.php');
 }
-$developer_query = $con->run("SELECT developer_id, developer_name, developer_status FROM developer ORDER BY developer_name");
+$developer_query = $con->run("SELECT developer_id, developer_name, developer_status FROM developer WHERE project_id = ? ORDER BY developer_name", array($_GET['project_id']));
 
 ?>
 <div class="container contact">
@@ -258,13 +258,13 @@ $developer_query = $con->run("SELECT developer_id, developer_name, developer_sta
 					<div class="form-group">
 						<label class="control-label col-sm-6" for="comment">Board:</label>
 						<div class="col-sm-10">
-						<select name="developers[]" class="form-control select2" multiple="multiple">
-									<?php
-									while ($developer = tep_db_fetch_array($developer_query)) {
-									?>
-										<option value="<?php echo $developer['developer_id']; ?>" <?php echo ($developer['developer_status'] == 0 ? 'disabled' : ''); ?>><?php echo $developer['developer_name']; ?></option>
-									<?php } ?>
-								</select>
+							<select name="developers[]" class="form-control select2" multiple="multiple">
+								<?php
+								while ($developer = tep_db_fetch_array($developer_query)) {
+								?>
+									<option value="<?php echo $developer['developer_id']; ?>" <?php echo ($developer['developer_status'] == 0 ? 'disabled' : ''); ?>><?php echo $developer['developer_name']; ?></option>
+								<?php } ?>
+							</select>
 						</div>
 					</div>
 					<div class="form-group">
@@ -279,7 +279,7 @@ $developer_query = $con->run("SELECT developer_id, developer_name, developer_sta
 	<?php } ?>
 </div>
 <script src="js/bootstrap-multiselect.js"></script>
-<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css"/>
+<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" />
 <script type="text/javascript">
 	$('.select2').multiselect({
 		nonSelectedText: 'Select Developer',
@@ -290,7 +290,7 @@ $developer_query = $con->run("SELECT developer_id, developer_name, developer_sta
 </script>
 <style>
 	.multiselect-container {
-        width: 100% !important;
-    }
+		width: 100% !important;
+	}
 </style>
 <?php include_once('includes/footer.php'); ?>

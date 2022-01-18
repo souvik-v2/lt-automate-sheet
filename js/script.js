@@ -83,4 +83,18 @@ $(document).ready(function () {
       },
     });
   });
+  //
+  $(document).on('click', '.is-disabled', function() {
+		if ($(this).find('select').prop('disabled')) {
+			alert('Developer has already been assigned to this project. Unassign first then try again.');
+		}
+	});
+  //
+	$('form').submit(function(e) {
+    //removes the disabled attribute from all elements on form submit.
+		$(':disabled').each(function(e) {
+			$(this).removeAttr('disabled');
+		})
+	});
+
 });
