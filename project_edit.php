@@ -71,7 +71,7 @@ if (isset($action) && ($action == 'updateproject')) {
 
 	tep_redirect('project.php');
 }
-$developer_query = $con->run("SELECT developer_id, developer_name, developer_status FROM developer WHERE project_id = ? ORDER BY developer_name", array($_GET['project_id']));
+$developer_query = $con->run("SELECT developer_id, developer_name, developer_status FROM developer ORDER BY developer_name");
 
 ?>
 <div class="container contact">
@@ -256,7 +256,6 @@ $developer_query = $con->run("SELECT developer_id, developer_name, developer_sta
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-sm-6" for="comment">Board:</label>
 						<div class="col-sm-10">
 							<select name="developers[]" class="form-control select2" multiple="multiple">
 								<?php

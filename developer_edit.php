@@ -30,9 +30,6 @@ if (isset($action) && ($action == 'editdeveloper')) {
 	$usql = "SELECT developer_id, developer_name, project_id, developer_status FROM developer WHERE developer_id = ?";
 	$uresult = $con->run($usql, array($_GET['developer_id']));
 	$data = tep_db_fetch_array($uresult);
-
-	$assigne_flag_query = $con->run("SELECT developers from project WHERE FIND_IN_SET(?, REPLACE(developers, ', ', ',')) <> 0  AND project_id=?", array($_GET['developer_id'], $data['project_id']));
-	$assigne_flag = (tep_db_num_rows($assigne_flag_query) > 0 ? 'disabled' : '');
 }
 if (isset($action) && ($action == 'updatedeveloper')) {
 
@@ -75,8 +72,8 @@ $presult = $con->run($psql);
 						</div>
 						<div class="form-group">
 							<label class="control-label col-sm-6" for="comment">Project Name:</label>
-							<div class="col-sm-10 is-disabled">
-								<select name="project_id" class="form-control" <?php echo $assigne_flag; ?>>
+							<div class="col-sm-10">
+								<select name="project_id" class="form-control">
 									<?php
 									while ($pdata = tep_db_fetch_array($presult)) {
 									?>
