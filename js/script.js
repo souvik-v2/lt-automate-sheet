@@ -69,7 +69,7 @@ $(document).ready(function () {
   //
   $("form").attr("autocomplete", "off");
   //
-  $("#report_project_id").on("change", function () {
+  $("#report_project_id").on("change", function () {  
     var projectID = $("#report_project_id").val();
     $.ajax({
       url: "ajax_required.php?action=reportcall",
@@ -84,11 +84,11 @@ $(document).ready(function () {
     });
   });
   //
-	$('form').submit(function(e) {
+  $('form').submit(function(e) {
     //removes the disabled attribute from all elements on form submit.
 		$(':disabled').each(function(e) {
 			$(this).removeAttr('disabled');
 		})
 	});
-
+  //
 });
